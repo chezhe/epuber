@@ -7,6 +7,7 @@ import {
   MemoizedEpubAndSanitized,
 } from '@jcsj/epub'
 import ToolBar from './ToolBar'
+import { useEffect } from 'react'
 
 export default function Reader() {
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {

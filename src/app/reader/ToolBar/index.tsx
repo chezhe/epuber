@@ -11,8 +11,21 @@ import {
 } from 'lucide-react'
 import Link from 'next/link'
 import SearchBox from './Search'
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import ThemeBox from './Theme'
 
 export default function ToolBar({ title }: { title?: string }) {
+  const router = useRouter()
+  useEffect(() => {
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === ',') {
+        router.push('/reader/settings')
+        event.preventDefault()
+      }
+    })
+    return () => window.removeEventListener('keydown', () => {})
+  }, [])
   return (
     <HStack justifyContent="space-between" bg="red.300" w="100%" px={6} py={3}>
       <HStack spacing={6}>
@@ -28,7 +41,7 @@ export default function ToolBar({ title }: { title?: string }) {
       </Text>
 
       <HStack spacing={6}>
-        <CaseSensitive size={24} color="#666" cursor="pointer" />
+        <ThemeBox />
         <SearchBox />
         <Bookmark size={24} color="#666" cursor="pointer" />
       </HStack>

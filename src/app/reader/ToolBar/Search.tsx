@@ -5,20 +5,25 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalHeader,
-  ModalFooter,
-  ModalBody,
-  ModalCloseButton,
   useDisclosure,
   Input,
-  InputGroup,
-  InputLeftElement,
   HStack,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
+import { useEffect } from 'react'
 
 export default function SearchBox() {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false })
+
+  useEffect(() => {
+    window.addEventListener('keydown', (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
+        onOpen()
+      }
+    })
+    return () => window.removeEventListener('keydown', () => {})
+  }, [])
+
   return (
     <>
       <Search size={24} color="#666" cursor="pointer" onClick={onOpen} />
@@ -47,6 +52,8 @@ export default function SearchBox() {
               borderColor="transparent"
               width="100%"
               _focus={{ border: '0px' }}
+              color="black"
+              fontSize={24}
             />
           </HStack>
         </ModalContent>

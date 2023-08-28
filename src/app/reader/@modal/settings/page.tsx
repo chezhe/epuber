@@ -4,7 +4,6 @@ import {
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalCloseButton,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useRouter } from 'next/navigation'
@@ -15,10 +14,16 @@ export default function modal() {
   const router = useRouter()
 
   return (
-    <Modal size="full" isOpen={isOpen} onClose={onClose}>
+    <Modal
+      size="full"
+      isOpen={isOpen}
+      onClose={() => {
+        onClose()
+        router.replace('/reader')
+      }}
+    >
       <ModalOverlay />
-      <ModalContent p={8}>
-        <ModalCloseButton />
+      <ModalContent bg="transparent">
         <Settings />
       </ModalContent>
     </Modal>
