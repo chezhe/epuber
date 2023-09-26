@@ -24,12 +24,11 @@ export default function ThemeBox() {
           alignItems="center"
           mt={24}
           borderRadius={2}
-          bg="white.50"
           p={8}
         >
           <ModalCloseButton />
           <ModalHeader>Theme</ModalHeader>
-          <VStack></VStack>
+          <VStack p={16}></VStack>
         </ModalContent>
       </Modal>
     </>

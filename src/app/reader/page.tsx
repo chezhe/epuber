@@ -12,10 +12,15 @@ import { useEffect } from 'react'
 export default function Reader() {
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
+
     if (file) {
-      // MemoizedEpub(file).then((epub) => {
-      //   //...
-      // })
+      // var reader = new FileReader()
+      // reader.onload = function (evt) {
+      //   MemoizedEpub(evt.target?.result).then((epub) => {
+      //     //...
+      //   })
+      // }
+      // reader.readAsArrayBuffer(file)
     }
   }
   return (

@@ -23,7 +23,7 @@ export default function modal() {
       }}
     >
       <ModalOverlay />
-      <ModalContent bg="transparent">
+      <ModalContent>
         <Settings />
       </ModalContent>
     </Modal>
