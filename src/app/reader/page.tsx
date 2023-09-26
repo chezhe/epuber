@@ -1,26 +1,17 @@
 'use client'
 
 import { HStack, Input, Text, VStack } from '@chakra-ui/react'
-import {
-  MemoizedEpub,
-  SanitizedEpub,
-  MemoizedEpubAndSanitized,
-} from '@jcsj/epub'
 import ToolBar from './ToolBar'
-import { useEffect } from 'react'
+import JSZip from 'jszip'
+import { parseEpub } from './epub-parser'
 
 export default function Reader() {
-  const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-
-    if (file) {
-      // var reader = new FileReader()
-      // reader.onload = function (evt) {
-      //   MemoizedEpub(evt.target?.result).then((epub) => {
-      //     //...
-      //   })
-      // }
-      // reader.readAsArrayBuffer(file)
+  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      const file = e.target.files?.[0]
+      parseEpub(file)
+    } catch (error) {
+      console.log('error', error)
     }
   }
   return (
