@@ -1,14 +1,7 @@
 'use client'
 
 import { Text, HStack } from '@chakra-ui/react'
-import {
-  BookMarked,
-  Bookmark,
-  CaseSensitive,
-  List,
-  Search,
-  Settings,
-} from 'lucide-react'
+import { BookMarked, Bookmark, Settings } from 'lucide-react'
 import Link from 'next/link'
 import SearchBox from './Search'
 import { useEffect } from 'react'

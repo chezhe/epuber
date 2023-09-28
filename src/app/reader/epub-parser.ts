@@ -1,8 +1,16 @@
 import { Metadata, Chapter } from '@/types'
 import JSZip from 'jszip'
-import { parseString, parseStringPromise } from 'xml2js'
+import { parseStringPromise } from 'xml2js'
+import TurndownService from 'turndown'
 
 const zip = new JSZip()
+const turndownService = new TurndownService({
+  headingStyle: 'atx',
+})
+turndownService.remove('script')
+turndownService.remove('style')
+turndownService.remove('title')
+turndownService.remove('br')
 
 export async function parseEpub(file?: File) {
   if (!file) {
@@ -28,9 +36,7 @@ export async function parseEpub(file?: File) {
   const ncxContent = await ncxFile.async('string')
   const ncx = await parseStringPromise(ncxContent)
   const metadata = getMetadata(opf.package.metadata, ncx)
-  console.log('metadata', metadata)
-  const chapters = getTOCs(ncx)
-
+  const chapters = await getChapters(ncx, detail)
   return {
     metadata,
     chapters,
@@ -56,9 +62,6 @@ function extractValue(v: any) {
 function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
   if (metadata.length) {
     const md = metadata[0]
-
-    console.log('metadata', md)
-
     return {
       title: extractValue(md['dc:title']),
       author: extractValue(md['dc:creator']),
@@ -77,20 +80,31 @@ function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
   }
 }
 
-function getTOCs(ncx: any): Chapter[] {
+async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
   const navMap = ncx.ncx.navMap[0]
   const navPoints = navMap.navPoint
-  const toc = navPoints.map((navPoint: any) => {
-    const content = navPoint.content[0]['$']
-    const src = content.src
-    const title = navPoint.navLabel[0].text[0]
-    const playOrder = navPoint['$'].playOrder
-    return {
-      src,
-      title,
-      playOrder: Number(playOrder),
-    }
-  })
+
+  const toc = await Promise.all(
+    navPoints.map(async (navPoint: any) => {
+      const content = navPoint.content[0]['$']
+      const src = content.src
+      const title = navPoint.navLabel[0].text[0]
+      const playOrder = navPoint['$'].playOrder
+      const file = detail.files[src]
+      let _content = ''
+      try {
+        const html = await file.async('string')
+        _content = turndownService.turndown(html)
+      } catch (error) {}
+
+      return {
+        src,
+        title,
+        playOrder: Number(playOrder),
+        content: _content,
+      }
+    })
+  )
 
   return toc
 }

@@ -34,6 +34,7 @@ export interface Chapter {
   title: string
   src: string
   playOrder: number
+  content: string
   items?: Chapter[]
 }
 
