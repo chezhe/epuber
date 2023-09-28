@@ -2,21 +2,30 @@
 
 import { HStack, Input, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
-import JSZip from 'jszip'
 import { parseEpub } from './epub-parser'
+import { useState } from 'react'
+import { Book, Metadata, Chapter } from '@/types'
 
 export default function Reader() {
+  const [book, setBook] = useState<Book>()
+  const [activeChapter, setActiveChapter] = useState<Chapter>()
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       const file = e.target.files?.[0]
-      parseEpub(file)
+      const book = await parseEpub(file)
+      setBook(book)
+      setActiveChapter(book.chapters[0])
     } catch (error) {
       console.log('error', error)
     }
   }
   return (
     <VStack h="100vh">
-      <ToolBar title="The Handmaid's Tale" />
+      <ToolBar
+        book={book}
+        activeChapter={activeChapter}
+        setActiveChapter={setActiveChapter}
+      />
       <HStack>
         <Input
           placeholder="Open Your .epub book"

@@ -16,12 +16,13 @@ export default function SearchBox() {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false })
 
   useEffect(() => {
-    window.addEventListener('keydown', (event: KeyboardEvent) => {
+    const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
         onOpen()
       }
-    })
-    return () => window.removeEventListener('keydown', () => {})
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
   return (
