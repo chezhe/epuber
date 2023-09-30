@@ -15,6 +15,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@fontsource/inconsolata": "^5.0.8",
+    "@khanacademy/simple-markdown": "^0.10.0",
     "@uidotdev/usehooks": "^2.1.1",
     "@wcj/html-to-markdown": "^2.0.0",
     "epub": "^1.2.1",

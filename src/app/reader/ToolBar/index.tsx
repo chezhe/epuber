@@ -32,7 +32,7 @@ export default function ToolBar({
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
   return (
-    <HStack justifyContent="space-between" bg="red.300" w="100%" px={6} py={3}>
+    <HStack justifyContent="space-between" bg="red.300" w="100%" px={6} py={4}>
       <HStack spacing={6}>
         <Link href="/reader/settings">
           <Settings size={24} color="#666" cursor="pointer" />

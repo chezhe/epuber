@@ -90,7 +90,12 @@ async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
       const src = content.src
       const title = navPoint.navLabel[0].text[0]
       const playOrder = navPoint['$'].playOrder
-      const file = detail.files[src]
+      let file = detail.files[src]
+      if (!file) {
+        if (src.includes('#')) {
+          file = detail.files[src.split('#')[0]]
+        }
+      }
       let _content = ''
       try {
         const html = await file.async('string')

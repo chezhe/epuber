@@ -107,3 +107,7 @@ a {
     color-scheme: dark;
   }
 }
+
+#reader-wrap a {
+  color: #008cd5;
+}

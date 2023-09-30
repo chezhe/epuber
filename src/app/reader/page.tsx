@@ -1,13 +1,14 @@
 'use client'
 
-import { Box, HStack, Heading, Input, Text, VStack } from '@chakra-ui/react'
+import { HStack, Input, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
 import { parseEpub } from './epub-parser'
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Book, Chapter } from '@/types'
-import Markdown from 'markdown-to-jsx'
+import BookRender from './Render/Book'
 
 export default function Reader() {
+  const wrapper = useRef(null)
   const [book, setBook] = useState<Book>()
   const [activeChapter, setActiveChapter] = useState<Chapter>()
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -22,37 +23,16 @@ export default function Reader() {
       console.log('error', error)
     }
   }
+
   return (
-    <VStack h="100vh">
+    <VStack h="100vh" gap={0}>
       <ToolBar
         book={book}
         activeChapter={activeChapter}
         setActiveChapter={setActiveChapter}
       />
       {activeChapter ? (
-        <Box id="reader-wrap" p={8} fontSize={24}>
-          <Markdown
-            options={{
-              overrides: {
-                h1: {
-                  component: Heading,
-                  props: {
-                    textAlign: 'center',
-                    lineHeight: 2,
-                  },
-                },
-                p: {
-                  component: Text,
-                },
-                br: {
-                  component: () => <Box h={0} />,
-                },
-              },
-            }}
-          >
-            {activeChapter.content}
-          </Markdown>
-        </Box>
+        <BookRender activeChapter={activeChapter} book={book} />
       ) : (
         <VStack>
           <HStack>
