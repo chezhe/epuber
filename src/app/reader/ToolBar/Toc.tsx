@@ -41,7 +41,7 @@ export default function Toc({
   return (
     <>
       <List size={24} color="#666" cursor="pointer" onClick={onOpen} />
-      <Drawer isOpen={isOpen} placement="left" size={'lg'} onClose={onClose}>
+      <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />

@@ -3,12 +3,12 @@
 import { HStack, Input, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
 import { parseEpub } from './epub-parser'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 import { Book, Chapter } from '@/types'
-import BookRender from './Render/Book'
+import MDRender from './Render/MDRender'
+import RawRender from './Render/RawRender'
 
 export default function Reader() {
-  const wrapper = useRef(null)
   const [book, setBook] = useState<Book>()
   const [activeChapter, setActiveChapter] = useState<Chapter>()
   const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,7 +32,7 @@ export default function Reader() {
         setActiveChapter={setActiveChapter}
       />
       {activeChapter ? (
-        <BookRender activeChapter={activeChapter} book={book} />
+        <RawRender activeChapter={activeChapter} book={book} />
       ) : (
         <VStack>
           <HStack>

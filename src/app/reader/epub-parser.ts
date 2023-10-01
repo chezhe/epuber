@@ -1,16 +1,8 @@
 import { Metadata, Chapter } from '@/types'
 import JSZip from 'jszip'
 import { parseStringPromise } from 'xml2js'
-import TurndownService from 'turndown'
 
 const zip = new JSZip()
-const turndownService = new TurndownService({
-  headingStyle: 'atx',
-})
-turndownService.remove('script')
-turndownService.remove('style')
-turndownService.remove('title')
-turndownService.remove('br')
 
 export async function parseEpub(file?: File) {
   if (!file) {
@@ -81,6 +73,8 @@ function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
 }
 
 async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
+  console.log('ncx', ncx)
+
   const navMap = ncx.ncx.navMap[0]
   const navPoints = navMap.navPoint
 
@@ -91,6 +85,8 @@ async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
       const title = navPoint.navLabel[0].text[0]
       const playOrder = navPoint['$'].playOrder
       let file = detail.files[src]
+      console.log('src', src)
+
       if (!file) {
         if (src.includes('#')) {
           file = detail.files[src.split('#')[0]]
@@ -98,9 +94,10 @@ async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
       }
       let _content = ''
       try {
-        const html = await file.async('string')
-        _content = turndownService.turndown(html)
-      } catch (error) {}
+        _content = await file.async('string')
+      } catch (error) {
+        console.log('error', error)
+      }
 
       return {
         src,
@@ -113,3 +110,5 @@ async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
 
   return toc
 }
+
+function parseHTML(html: string) {}
