@@ -85,6 +85,17 @@ export default function MDRender({
           const href = SimpleMarkdown.sanitizeUrl(node.target)
           if (!href?.startsWith('http') && href?.includes('#')) {
             // const target = getAnchorTarget(href?.split('#')?.[1], html?.body)
+            return (
+              <Text
+                key={state.key}
+                color="blue.400"
+                display={'inline'}
+                cursor={'pointer'}
+                marginRight={2}
+              >
+                <sup>{output(node.content, state)}</sup>
+              </Text>
+            )
           }
           return (
             <Text
@@ -121,6 +132,7 @@ export default function MDRender({
       id="reader-wrap"
       w="100%"
       p={8}
+      px={16}
       fontSize={24}
       overflowY={'scroll'}
       lineHeight={2}
