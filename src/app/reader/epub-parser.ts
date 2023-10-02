@@ -73,8 +73,6 @@ function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
 }
 
 async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
-  console.log('ncx', ncx)
-
   const navMap = ncx.ncx.navMap[0]
   const navPoints = navMap.navPoint
 
@@ -90,6 +88,8 @@ async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
       if (!file) {
         if (src.includes('#')) {
           file = detail.files[src.split('#')[0]]
+        }
+        if (!file) {
         }
       }
       let _content = ''

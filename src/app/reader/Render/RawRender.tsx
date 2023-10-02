@@ -1,6 +1,7 @@
 import { Book, Chapter } from '@/types'
 import { Box } from '@chakra-ui/react'
 import { XMLParser } from 'fast-xml-parser'
+import RawNode from './RawNode'
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -25,11 +26,7 @@ export default function RawRender({
   if (!activeChapter?.content) {
     return null
   }
-  const {
-    html: { body },
-  } = parser.parse(activeChapter?.content ?? '')
-
-  console.log('html', activeChapter?.content)
+  const { html } = parser.parse(activeChapter?.content ?? '')
 
   return (
     <Box
@@ -38,6 +35,9 @@ export default function RawRender({
       p={8}
       fontSize={24}
       overflowY={'scroll'}
-    ></Box>
+      lineHeight={2}
+    >
+      <RawNode tagName={'body'} node={html?.body} />
+    </Box>
   )
 }
