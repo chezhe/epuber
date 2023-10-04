@@ -92,6 +92,7 @@ export default function MDRender({
           if (!href?.startsWith('http') && href?.includes('#')) {
             const id = href?.split('#')?.[1]
             const target = getAnchorTarget(id, html?.body.p)
+
             if (target) {
               return (
                 <Popover id={id}>

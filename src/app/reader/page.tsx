@@ -3,12 +3,13 @@
 import { HStack, Input, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
 import { parseEpub } from './epub-parser'
-import { useEffect, useState } from 'react'
+import { createContext, useEffect, useState } from 'react'
 import { Book, Chapter } from '@/types'
 import MDRender from './Render/MDRender'
 import RawRender from './Render/RawRender'
 import { useSearchParams } from 'next/navigation'
 import books from '@/utils/sample.json'
+import { BookContext } from '@/hooks/BookContext'
 
 export default function Reader() {
   const [book, setBook] = useState<Book>()
@@ -54,30 +55,32 @@ export default function Reader() {
   }, [bookName])
 
   return (
-    <VStack h="100vh" gap={0}>
-      <ToolBar
-        book={book}
-        activeChapter={activeChapter}
-        setActiveChapter={setActiveChapter}
-      />
-      {activeChapter ? (
-        <MDRender
+    <BookContext.Provider value={book}>
+      <VStack h="100vh" gap={0}>
+        <ToolBar
+          book={book}
           activeChapter={activeChapter}
           setActiveChapter={setActiveChapter}
-          book={book}
         />
-      ) : (
-        <VStack>
-          <HStack>
-            <Input
-              placeholder="Open Your .epub book"
-              type="file"
-              onChange={onFileChange}
-            />
-          </HStack>
-          <Text fontSize={24}>Sphinx of black quartz, judge my vow</Text>
-        </VStack>
-      )}
-    </VStack>
+        {activeChapter ? (
+          <RawRender
+            activeChapter={activeChapter}
+            setActiveChapter={setActiveChapter}
+            book={book}
+          />
+        ) : (
+          <VStack>
+            <HStack>
+              <Input
+                placeholder="Open Your .epub book"
+                type="file"
+                onChange={onFileChange}
+              />
+            </HStack>
+            <Text fontSize={24}>Sphinx of black quartz, judge my vow</Text>
+          </VStack>
+        )}
+      </VStack>
+    </BookContext.Provider>
   )
 }

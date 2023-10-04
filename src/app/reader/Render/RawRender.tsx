@@ -2,31 +2,33 @@ import { Book, Chapter } from '@/types'
 import { Box } from '@chakra-ui/react'
 import { XMLParser } from 'fast-xml-parser'
 import RawNode from './RawNode'
-
-const parser = new XMLParser({
-  ignoreAttributes: false,
-  ignorePiTags: false,
-  // preserveOrder: true,
-  unpairedTags: ['hr', 'br', 'link', 'meta'],
-  stopNodes: ['*.pre', '*.script'],
-  processEntities: true,
-  htmlEntities: true,
-  trimValues: true,
-  removeNSPrefix: true,
-  allowBooleanAttributes: true,
-})
+import { parse, parseFragment } from 'parse5'
+import { useEffect } from 'react'
 
 export default function RawRender({
   activeChapter,
   book,
+  setActiveChapter,
 }: {
   activeChapter?: Chapter
   book?: Book
+  setActiveChapter: (chapter: Chapter | undefined) => void
 }) {
+  useEffect(() => {
+    document.getElementById('reader-wrap')?.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    })
+  }, [activeChapter?.src])
+
   if (!activeChapter?.content) {
     return null
   }
-  const { html } = parser.parse(activeChapter?.content ?? '')
+  const bodyHtml = /<body.*?>([\s\S]*)<\/body>/.exec(
+    activeChapter?.content ?? ''
+  )?.[1]
+  const body = parseFragment(bodyHtml ?? '')
+  console.log('body', body)
 
   return (
     <Box
@@ -37,7 +39,7 @@ export default function RawRender({
       overflowY={'scroll'}
       lineHeight={2}
     >
-      <RawNode tagName={'body'} node={html?.body} />
+      <RawNode nodes={body.childNodes} />
     </Box>
   )
 }
