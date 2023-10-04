@@ -35,6 +35,7 @@ export default function RawRender({
       id="reader-wrap"
       w="100%"
       p={8}
+      px={16}
       fontSize={24}
       overflowY={'scroll'}
       lineHeight={2}

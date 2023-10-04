@@ -9,6 +9,7 @@ import {
   Heading,
   Box,
   Img,
+  Divider,
 } from '@chakra-ui/react'
 import type { DocumentFragment } from 'parse5/dist/tree-adapters/default.d.ts'
 import { useContext } from 'react'
@@ -24,7 +25,7 @@ function ImageNode({ node }: { node?: DocumentFragment.ChildNode }) {
 function LinkNode({ node }: { node?: DocumentFragment.ChildNode }) {
   const href = node.attrs.find((attr: any) => attr.name === 'href')?.value
   return (
-    <Text color="blue.400" display={'inline'} title={href}>
+    <Text color="blue.400" display={'inline'} title={href} cursor={'pointer'}>
       {node.value}
       <RawNode nodes={node.childNodes} />
     </Text>
@@ -51,6 +52,26 @@ export default function RawNode({
         .map((node, idx) => {
           if (node.nodeName === 'br') {
             return <br />
+          }
+          if (node.nodeName === 'hr') {
+            return <Divider key={idx} />
+          }
+          if (node.nodeName === 'blockquote') {
+            return (
+              <Box
+                key={idx}
+                borderLeftWidth={4}
+                pl={6}
+                py={4}
+                my={4}
+                mx={6}
+                borderLeftColor={'blue.400'}
+                bg="gray.800"
+                fontStyle={'italic'}
+              >
+                <RawNode nodes={node.childNodes} />
+              </Box>
+            )
           }
           if (node.nodeName === 'div') {
             return (
@@ -83,7 +104,7 @@ export default function RawNode({
 
           if (node.nodeName === 'sup') {
             return (
-              <sup key={idx} style={{ marginRight: 8, marginLeft: 2 }}>
+              <sup key={idx} style={{ marginRight: 4, marginLeft: 2 }}>
                 <RawNode nodes={node.childNodes} />
               </sup>
             )
