@@ -1,7 +1,7 @@
 'use client'
 
 import { Text, HStack } from '@chakra-ui/react'
-import { BookMarked, Bookmark, Home, Settings } from 'lucide-react'
+import { BookMarked, Bookmark, Home, Library, Settings } from 'lucide-react'
 import Link from 'next/link'
 import SearchBox from './Search'
 import { useEffect } from 'react'
@@ -34,7 +34,9 @@ export default function ToolBar({
   return (
     <HStack justifyContent="space-between" bg="red.300" w="100%" px={6} py={4}>
       <HStack spacing={6}>
-        <Home size={24} color="#666" cursor="pointer" />
+        <Link href="/books">
+          <Library size={24} color="#666" cursor="pointer" />
+        </Link>
         <Link href="/reader/settings">
           <Settings size={24} color="#666" cursor="pointer" />
         </Link>
@@ -43,7 +45,7 @@ export default function ToolBar({
           activeChapter={activeChapter}
           setActiveChapter={setActiveChapter}
         />
-        <BookMarked size={24} color="#666" cursor="pointer" />
+        {/* <BookMarked size={24} color="#666" cursor="pointer" /> */}
       </HStack>
 
       <Text color="blackAlpha.700" fontWeight="bold">

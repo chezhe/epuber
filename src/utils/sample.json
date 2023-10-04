@@ -1,0 +1,20 @@
+[
+  {
+    "title": "1984",
+    "author": "George Orwell",
+    "file": "/1984.epub",
+    "cover": "1984.png"
+  },
+  {
+    "title": "务虚笔记",
+    "author": "史铁生",
+    "file": "/务虚笔记.epub",
+    "cover": "务虚笔记.jpeg"
+  },
+  {
+    "title": "荒原狼",
+    "author": "赫尔曼·黑塞",
+    "file": "/荒原狼.epub",
+    "cover": "荒原狼.jpeg"
+  }
+]

@@ -12,10 +12,11 @@ export interface Chapter {
   src: string
   playOrder: number
   content: string
-  items?: Chapter[]
+  chapters?: Chapter[]
 }
 
 export interface Book {
   metadata?: Metadata
   chapters: Chapter[]
+  images: { key: string; url: string }[]
 }

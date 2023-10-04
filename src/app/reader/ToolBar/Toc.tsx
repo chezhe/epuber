@@ -47,31 +47,64 @@ export default function Toc({
           <DrawerCloseButton />
           <DrawerHeader>Table of Content</DrawerHeader>
 
-          <DrawerBody>
-            <VStack gap={4} alignItems={'flex-start'}>
+          <DrawerBody p={0}>
+            <VStack gap={2} alignItems={'flex-start'}>
               {chapters?.map((t, idx) => {
                 const isActive = activeChapter?.src === t.src
                 return (
-                  <HStack
+                  <VStack
                     key={idx}
                     w="100%"
                     justifyContent={'space-between'}
-                    gap={6}
                     cursor={'pointer'}
-                    onClick={() => {
-                      setActiveChapter?.(t)
-                      onClose()
-                    }}
                   >
                     <Text
+                      w="100%"
                       fontSize={18}
                       fontWeight={600}
+                      bg={isActive ? 'gray.100' : undefined}
                       color={isActive ? 'blue.500' : 'blackAlpha.900'}
+                      px={4}
+                      py={2}
+                      onClick={() => {
+                        setActiveChapter?.(t)
+                        onClose()
+                      }}
                     >
                       {t.title}
                     </Text>
-                    <Text color="blackAlpha.700">{t.playOrder}</Text>
-                  </HStack>
+                    {t?.chapters && (
+                      <VStack w="100%">
+                        {t.chapters.map((_t, idx) => {
+                          const isActive = activeChapter?.src === _t.src
+                          return (
+                            <HStack
+                              key={idx}
+                              w="100%"
+                              justifyContent={'space-between'}
+                              gap={6}
+                              pl={8}
+                              py={2}
+                              cursor={'pointer'}
+                              bg={isActive ? 'gray.100' : undefined}
+                              onClick={() => {
+                                setActiveChapter?.(_t)
+                                onClose()
+                              }}
+                            >
+                              <Text
+                                fontSize={16}
+                                fontWeight={600}
+                                color={isActive ? 'blue.500' : 'blackAlpha.900'}
+                              >
+                                {_t.title}
+                              </Text>
+                            </HStack>
+                          )
+                        })}
+                      </VStack>
+                    )}
+                  </VStack>
                 )
               })}
             </VStack>

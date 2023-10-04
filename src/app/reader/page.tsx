@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react'
 import { Book, Chapter } from '@/types'
 import MDRender from './Render/MDRender'
 import RawRender from './Render/RawRender'
+import { useSearchParams } from 'next/navigation'
+import books from '@/utils/sample.json'
 
 export default function Reader() {
   const [book, setBook] = useState<Book>()
@@ -24,19 +26,32 @@ export default function Reader() {
     }
   }
 
+  const query = useSearchParams()
+  const bookName = query.get('book')
+
   useEffect(() => {
-    fetch('/务虚笔记.epub')
-      .then((res) => res.blob())
-      .then((blob) => {
-        const file = new File([blob], '务虚笔记.epub')
-        parseEpub(file).then((book) => {
-          console.log('book', book)
-          setBook(book)
-          setActiveChapter(book.chapters[0])
-        })
-      })
-      .catch(console.error)
-  }, [])
+    setBook(undefined)
+    setActiveChapter(undefined)
+
+    if (bookName) {
+      const bk = books.find((b) => b.title === bookName)
+      if (bk) {
+        console.log('bookName', bookName, bk.file)
+
+        fetch(bk.file)
+          .then((res) => res.blob())
+          .then((blob) => {
+            const file = new File([blob], bk.title)
+            parseEpub(file).then((book) => {
+              console.log('book', book)
+              setBook(book)
+              setActiveChapter(book.chapters[0])
+            })
+          })
+          .catch(console.error)
+      }
+    }
+  }, [bookName])
 
   return (
     <VStack h="100vh" gap={0}>
@@ -46,7 +61,11 @@ export default function Reader() {
         setActiveChapter={setActiveChapter}
       />
       {activeChapter ? (
-        <MDRender activeChapter={activeChapter} book={book} />
+        <MDRender
+          activeChapter={activeChapter}
+          setActiveChapter={setActiveChapter}
+          book={book}
+        />
       ) : (
         <VStack>
           <HStack>

@@ -12,6 +12,8 @@ export async function parseEpub(file?: File) {
   console.log('detail', detail)
   const fileKeys = Object.keys(detail.files)
   const opfFileKey = fileKeys.find((key) => key.endsWith('.opf'))
+  let folder = opfFileKey?.split('/')[0]
+  folder = folder?.endsWith('opf') ? '' : folder + '/'
   if (!opfFileKey) {
     throw new Error('Invalid epub file')
   }
@@ -27,11 +29,29 @@ export async function parseEpub(file?: File) {
   const ncxFile = detail.files[ncxFileKey]
   const ncxContent = await ncxFile.async('string')
   const ncx = await parseStringPromise(ncxContent)
+  console.log('ncx', ncx)
+
   const metadata = getMetadata(opf.package.metadata, ncx)
-  const chapters = await getChapters(ncx, detail)
+  const chapters = await getChapters(ncx, detail, folder)
+
+  const imageKeys = fileKeys.filter((key) => {
+    return ['jpeg', 'jpg', 'png'].includes(key.split('.').pop() || '')
+  })
+  const images = await Promise.all(
+    imageKeys.map(async (key) => {
+      const file = detail.files[key]
+      const blob = await file.async('blob')
+      const url = URL.createObjectURL(blob)
+      return {
+        key,
+        url,
+      }
+    })
+  )
   return {
     metadata,
     chapters,
+    images,
   }
 }
 
@@ -72,39 +92,55 @@ function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
   }
 }
 
-async function getChapters(ncx: any, detail: JSZip): Promise<Chapter[]> {
+async function extractNavPoint(navPoint: any, detail: any, folder: string) {
+  const title = navPoint.navLabel[0].text[0]
+  const playOrder = navPoint['$'].playOrder
+
+  const content = navPoint.content[0]['$']
+  const src = content.src
+  let file = detail.files[folder + src]
+
+  if (!file) {
+    if (src.includes('#')) {
+      file = detail.files[folder + src.split('#')[0]]
+    }
+  }
+  let _content = ''
+  try {
+    _content = await file.async('string')
+  } catch (error) {
+    console.log('error', error)
+  }
+
+  let items = undefined
+  if (navPoint.navPoint) {
+    items = await Promise.all(
+      navPoint.navPoint.map(async (navPoint: any) => {
+        return await extractNavPoint(navPoint, detail, folder)
+      })
+    )
+  }
+
+  return {
+    src,
+    title,
+    playOrder: Number(playOrder),
+    content: _content,
+    chapters: items,
+  }
+}
+
+async function getChapters(
+  ncx: any,
+  detail: JSZip,
+  folder: string
+): Promise<Chapter[]> {
   const navMap = ncx.ncx.navMap[0]
   const navPoints = navMap.navPoint
 
   const toc = await Promise.all(
     navPoints.map(async (navPoint: any) => {
-      const content = navPoint.content[0]['$']
-      const src = content.src
-      const title = navPoint.navLabel[0].text[0]
-      const playOrder = navPoint['$'].playOrder
-      let file = detail.files[src]
-      console.log('src', src)
-
-      if (!file) {
-        if (src.includes('#')) {
-          file = detail.files[src.split('#')[0]]
-        }
-        if (!file) {
-        }
-      }
-      let _content = ''
-      try {
-        _content = await file.async('string')
-      } catch (error) {
-        console.log('error', error)
-      }
-
-      return {
-        src,
-        title,
-        playOrder: Number(playOrder),
-        content: _content,
-      }
+      return await extractNavPoint(navPoint, detail, folder)
     })
   )
 

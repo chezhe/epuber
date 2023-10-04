@@ -1,5 +1,16 @@
 import { Book, Chapter } from '@/types'
-import { Box, Heading, Text } from '@chakra-ui/react'
+import {
+  Box,
+  Heading,
+  Img,
+  Popover,
+  PopoverArrow,
+  PopoverBody,
+  PopoverCloseButton,
+  PopoverContent,
+  PopoverTrigger,
+  Text,
+} from '@chakra-ui/react'
 import { useEffect } from 'react'
 import SimpleMarkdown, {
   Output,
@@ -17,23 +28,21 @@ turndownService.remove('style')
 turndownService.remove('title')
 turndownService.remove('br')
 
-// function getAnchorTarget(id: string, tree: any) {
-//   if (!tree) {
-//     return null
-//   }
-//   if (Array.isArray(tree)) {
-//     return tree.find((node: any) => {
-//       if (node['@_id'] === id) {
-//         return true
-//       }
-//       return getAnchorTarget(id, node)
-//     })
-//   }
-//   if (typeof tree === 'object') {
-//     return getAnchorTarget(id, Object.values(tree))
-//   }
-//   return null
-// }
+function getAnchorTarget(id: string, ps: any) {
+  if (!ps) {
+    return null
+  }
+
+  return ps.find((p: any) => {
+    if (p['a']) {
+      if (Array.isArray(p['a'])) {
+        return p['a'].find((a) => a['@_id'] === id)
+      }
+      return p['a']['@_id'] === id
+    }
+    return false
+  })
+}
 
 const parser = new XMLParser({
   ignoreAttributes: false,
@@ -48,17 +57,14 @@ const parser = new XMLParser({
   allowBooleanAttributes: true,
 })
 
-const defaultOutput = SimpleMarkdown.outputFor(
-  SimpleMarkdown.defaultRules,
-  'react'
-)
-
 export default function MDRender({
   activeChapter,
   book,
+  setActiveChapter,
 }: {
   activeChapter?: Chapter
   book?: Book
+  setActiveChapter: (chapter: Chapter | undefined) => void
 }) {
   useEffect(() => {
     document.getElementById('reader-wrap')?.scrollTo({
@@ -70,8 +76,8 @@ export default function MDRender({
   const md = turndownService.turndown(activeChapter?.content ?? '')
   const _nodes = SimpleMarkdown.defaultBlockParse(md)
   const { html } = parser.parse(activeChapter?.content ?? '')
-  console.log('body', html?.body)
 
+  const anchorTargets = []
   const output = SimpleMarkdown.outputFor(
     {
       ...SimpleMarkdown.defaultRules,
@@ -84,25 +90,74 @@ export default function MDRender({
         ) {
           const href = SimpleMarkdown.sanitizeUrl(node.target)
           if (!href?.startsWith('http') && href?.includes('#')) {
-            // const target = getAnchorTarget(href?.split('#')?.[1], html?.body)
-            return (
-              <Text
-                key={state.key}
-                color="blue.400"
-                display={'inline'}
-                cursor={'pointer'}
-                marginRight={2}
-              >
-                <sup>{output(node.content, state)}</sup>
-              </Text>
-            )
+            const id = href?.split('#')?.[1]
+            const target = getAnchorTarget(id, html?.body.p)
+            if (target) {
+              return (
+                <Popover id={id}>
+                  <PopoverTrigger>
+                    <Text
+                      key={state.key}
+                      color="blue.400"
+                      display={'inline'}
+                      cursor={'pointer'}
+                      mx={2}
+                      title={href}
+                    >
+                      <sup>{output(node.content, state)}</sup>
+                    </Text>
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverBody p={4}>
+                      <Text
+                        fontSize={16}
+                        fontWeight={600}
+                        lineHeight={1.4}
+                        letterSpacing={'widest'}
+                      >
+                        {target['#text']}
+                      </Text>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              )
+            }
+            const link = href?.split('#')?.[0]
+            let chapter = book?.chapters?.find((c) => {
+              return (
+                c.src.includes(link) ||
+                c.chapters?.find((cc) => cc.src.includes(link))
+              )
+            })
+
+            if (chapter) {
+              if (!chapter.src.includes(link)) {
+                chapter = chapter?.chapters?.find((c) => c.src.includes(link))
+              }
+
+              return (
+                <Text
+                  key={state.key}
+                  color="blue.400"
+                  display={'inline'}
+                  cursor={'pointer'}
+                  onClick={() => setActiveChapter(chapter)}
+                  title={href}
+                >
+                  {output(node.content, state)}
+                </Text>
+              )
+            }
           }
+
           return (
             <Text
               key={state.key}
               color="blue.400"
               display={'inline'}
               cursor={'pointer'}
+              title={href ?? ''}
             >
               {output(node.content, state)}
             </Text>
@@ -121,6 +176,29 @@ export default function MDRender({
               {output(node.content, state)}
             </Heading>
           )
+        },
+      },
+      image: {
+        ...SimpleMarkdown.defaultRules.image,
+        react: function (
+          node: SingleASTNode,
+          output: Output<any>,
+          state: State
+        ) {
+          const src = SimpleMarkdown.sanitizeUrl(node.target)
+          const img = book?.images?.find((i) => src?.includes(i.key))
+          if (img) {
+            return (
+              <Img
+                key={state.key}
+                src={img.url}
+                alt={node.alt}
+                title={node.title}
+                margin="0 auto"
+              />
+            )
+          }
+          return null
         },
       },
     },
