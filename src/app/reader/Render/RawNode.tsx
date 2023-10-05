@@ -66,8 +66,9 @@ export default function RawNode({
                 my={4}
                 mx={6}
                 borderLeftColor={'blue.400'}
-                bg="gray.800"
+                bg="gray.200"
                 fontStyle={'italic'}
+                fontSize={'smaller'}
               >
                 <RawNode nodes={node.childNodes} />
               </Box>

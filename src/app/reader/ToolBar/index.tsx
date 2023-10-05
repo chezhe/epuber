@@ -17,7 +17,7 @@ export default function ToolBar({
 }: {
   book?: Book
   activeChapter?: Chapter
-  setActiveChapter?: (chapter: Chapter) => void
+  setActiveChapter: (chapter: Chapter | undefined) => void
 }) {
   const title = book?.metadata?.title || ''
   const router = useRouter()
@@ -54,7 +54,7 @@ export default function ToolBar({
 
       <HStack spacing={6}>
         <ThemeBox />
-        <SearchBox />
+        <SearchBox book={book} setActiveChapter={setActiveChapter} />
         <Bookmark size={24} color="#666" cursor="pointer" />
       </HStack>
     </HStack>

@@ -8,12 +8,37 @@ import {
   useDisclosure,
   Input,
   HStack,
+  VStack,
+  Text,
+  Box,
 } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Book, Chapter } from '@/types'
+import TurndownService from 'turndown'
+import _, { set } from 'lodash'
+import { findChapter } from '@/utils/book'
+import { useSearchParams } from 'next/navigation'
 
-export default function SearchBox() {
+const turndownService = new TurndownService({
+  headingStyle: 'atx',
+})
+turndownService.remove('script')
+turndownService.remove('style')
+turndownService.remove('title')
+turndownService.remove('br')
+
+export default function SearchBox({
+  book,
+  setActiveChapter,
+}: {
+  book?: Book
+  setActiveChapter: (chapter: Chapter | undefined) => void
+}) {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false })
+  const [keyword, setKeyword] = useState('')
+
+  const search = useSearchParams()
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -25,10 +50,55 @@ export default function SearchBox() {
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [])
 
+  const contents = useMemo(() => {
+    if (!book) {
+      return []
+    }
+
+    return _.flatten(
+      book.chapters?.map((chapter) => {
+        const md = turndownService.turndown(chapter?.content ?? '')
+        const subc = chapter?.chapters?.map((c) => {
+          const md = turndownService.turndown(c?.content ?? '')
+          return md
+            .split('\n')
+            .filter((line) => line.trim())
+            .map((line) => {
+              return {
+                p: line,
+                c: c.src,
+                t: c.title,
+              }
+            })
+        })
+
+        const c = md
+          .split('\n')
+          .filter((line) => line.trim())
+          .map((line) => {
+            return {
+              p: line,
+              c: chapter.src,
+              t: chapter.title,
+            }
+          })
+
+        return [...c, ..._.flatten(subc ?? [])]
+      })
+    )
+  }, [book])
+
+  const onChange = (e: any) => {
+    const v = e.target.value
+    setKeyword(v)
+    if (v.trim()) {
+    }
+  }
+
   return (
     <>
       <Search size={24} color="#666" cursor="pointer" onClick={onOpen} />
-      <Modal size="lg" isOpen={isOpen} onClose={onClose}>
+      <Modal size="3xl" isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent
           justifyContent="center"
@@ -55,8 +125,39 @@ export default function SearchBox() {
               _focus={{ border: '0px' }}
               color="black"
               fontSize={24}
+              value={keyword}
+              onChange={onChange}
             />
           </HStack>
+          {keyword.trim() && (
+            <VStack maxH={400} overflowY={'scroll'}>
+              {contents
+                .filter((c) => c.p.includes(keyword.trim()))
+                .map((c, idx) => {
+                  const p = c.p.replace(keyword, `<mark>${keyword}</mark>`)
+                  return (
+                    <Box
+                      key={idx}
+                      color="gray.600"
+                      cursor={'pointer'}
+                      w="100%"
+                      px={4}
+                      py={2}
+                      borderBottomWidth={1}
+                      onClick={() => {
+                        const chapter = findChapter(book?.chapters ?? [], c.c)
+                        if (chapter) {
+                          setActiveChapter(chapter)
+                          onClose()
+                        }
+                      }}
+                    >
+                      <Text>{c.p}</Text>
+                    </Box>
+                  )
+                })}
+            </VStack>
+          )}
         </ModalContent>
       </Modal>
     </>
