@@ -1,9 +1,9 @@
 import { Book, Chapter } from '@/types'
 import { Box } from '@chakra-ui/react'
-import { XMLParser } from 'fast-xml-parser'
 import RawNode from './RawNode'
-import { parse, parseFragment } from 'parse5'
-import { useEffect } from 'react'
+import { parseFragment } from 'parse5'
+import { useEffect, useRef } from 'react'
+import { motion, useScroll } from 'framer-motion'
 
 export default function RawRender({
   activeChapter,
@@ -14,6 +14,8 @@ export default function RawRender({
   book?: Book
   setActiveChapter: (chapter: Chapter | undefined) => void
 }) {
+  const scrollRef = useRef(null)
+
   useEffect(() => {
     document.getElementById('reader-wrap')?.scrollTo({
       top: 0,
@@ -28,7 +30,11 @@ export default function RawRender({
     activeChapter?.content ?? ''
   )?.[1]
   const body = parseFragment(bodyHtml ?? '')
-  console.log('body', body)
+  const { scrollYProgress } = useScroll({
+    container: scrollRef,
+  })
+
+  console.log('###', scrollYProgress.get())
 
   return (
     <Box
@@ -39,7 +45,14 @@ export default function RawRender({
       fontSize={24}
       overflowY={'scroll'}
       lineHeight={2}
+      ref={scrollRef}
+      zIndex={1000}
     >
+      <motion.div
+        className="progress-bar"
+        viewport={{ root: scrollRef }}
+        style={{ scaleX: scrollYProgress }}
+      />
       <RawNode nodes={body.childNodes} />
     </Box>
   )

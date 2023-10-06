@@ -153,6 +153,7 @@ export default function SearchBox({
                       }}
                     >
                       <Text>{c.p}</Text>
+                      <Text fontWeight={600}>{c.t}</Text>
                     </Box>
                   )
                 })}

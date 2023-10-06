@@ -45,7 +45,7 @@ export default function Toc({
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Table of Content</DrawerHeader>
+          <DrawerHeader>Table of Contents</DrawerHeader>
 
           <DrawerBody p={0}>
             <VStack gap={2} alignItems={'flex-start'}>
