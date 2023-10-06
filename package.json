@@ -35,6 +35,7 @@
     "sanitize-html": "^2.11.0",
     "scrollex": "^2.0.1",
     "turndown": "^7.1.2",
+    "use-text-selection": "^1.1.5",
     "xml2js": "^0.6.2"
   },
   "devDependencies": {

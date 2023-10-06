@@ -1,10 +1,12 @@
 import { Book, Chapter } from '@/types'
-import { Box } from '@chakra-ui/react'
+import { Box, HStack, Text, VStack } from '@chakra-ui/react'
 import RawNode from './RawNode'
 import { parseFragment } from 'parse5'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import sanitizeHtml from 'sanitize-html'
+import { Highlighter, Languages } from 'lucide-react'
+import { useTextSelection } from 'use-text-selection'
 
 export default function RawRender({
   activeChapter,
@@ -16,6 +18,7 @@ export default function RawRender({
   setActiveChapter: (chapter: Chapter | undefined) => void
 }) {
   const scrollRef = useRef(null)
+  const { clientRect, isCollapsed, textContent } = useTextSelection()
 
   useEffect(() => {
     document.getElementById('reader-wrap')?.scrollTo({
@@ -31,11 +34,12 @@ export default function RawRender({
     activeChapter?.content ?? ''
   )?.[1]
   const body = parseFragment(sanitizeHtml(bodyHtml ?? ''))
-  console.log('body', body)
 
   const { scrollYProgress } = useScroll({
     container: scrollRef,
   })
+
+  console.log('clientRect', clientRect, isCollapsed, textContent)
 
   return (
     <Box
@@ -49,12 +53,27 @@ export default function RawRender({
       ref={scrollRef}
       zIndex={1000}
     >
+      <RawNode nodes={body.childNodes} />
+      {isCollapsed === false && (
+        <HStack
+          position={'absolute'}
+          left={clientRect?.left}
+          top={(clientRect?.y ?? 0) + (clientRect?.height ?? 0)}
+          bg="red.300"
+          p={2}
+          px={4}
+          gap={4}
+          borderRadius={2}
+        >
+          <Languages size={24} cursor={'pointer'} />
+          <Highlighter size={24} cursor={'pointer'} />
+        </HStack>
+      )}
       <motion.div
         className="progress-bar"
         viewport={{ root: scrollRef }}
         style={{ scaleX: scrollYProgress }}
       />
-      <RawNode nodes={body.childNodes} />
     </Box>
   )
 }
