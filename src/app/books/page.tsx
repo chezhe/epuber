@@ -14,7 +14,7 @@ import { Highlighter, Search } from 'lucide-react'
 
 export default function Books() {
   return (
-    <VStack h="100vh" gap={0} alignItems={'flex-start'} py={8} px={16}>
+    <VStack minH="100vh" gap={0} alignItems={'flex-start'} py={8} px={16}>
       <HStack w="100%" justifyContent={'space-between'}>
         <Heading>Books</Heading>
         <HStack gap={6}>

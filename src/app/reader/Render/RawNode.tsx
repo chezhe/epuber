@@ -54,7 +54,7 @@ export default function RawNode({
             return <br />
           }
           if (node.nodeName === 'hr') {
-            return <Divider key={idx} />
+            return <Divider key={idx} h={1} bg="blue.300" my={16} />
           }
           if (node.nodeName === 'blockquote') {
             return (
@@ -84,6 +84,30 @@ export default function RawNode({
 
           if (node.nodeName === 'img') {
             return <ImageNode key={idx} node={node} />
+          }
+
+          if (node.nodeName === 'b') {
+            return (
+              <Text fontWeight={600}>
+                <RawNode nodes={node.childNodes} />
+              </Text>
+            )
+          }
+
+          if (node.nodeName === 'i') {
+            return (
+              <Text fontStyle={'italic'}>
+                <RawNode nodes={node.childNodes} />
+              </Text>
+            )
+          }
+
+          if (node.nodeName === 'span') {
+            return (
+              <Text>
+                <RawNode nodes={node.childNodes} />
+              </Text>
+            )
           }
 
           if (node.nodeName === '#text') {

@@ -4,6 +4,7 @@ import RawNode from './RawNode'
 import { parseFragment } from 'parse5'
 import { useEffect, useRef } from 'react'
 import { motion, useScroll } from 'framer-motion'
+import sanitizeHtml from 'sanitize-html'
 
 export default function RawRender({
   activeChapter,
@@ -29,12 +30,12 @@ export default function RawRender({
   const bodyHtml = /<body.*?>([\s\S]*)<\/body>/.exec(
     activeChapter?.content ?? ''
   )?.[1]
-  const body = parseFragment(bodyHtml ?? '')
+  const body = parseFragment(sanitizeHtml(bodyHtml ?? ''))
+  console.log('body', body)
+
   const { scrollYProgress } = useScroll({
     container: scrollRef,
   })
-
-  console.log('###', scrollYProgress.get())
 
   return (
     <Box
