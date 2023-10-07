@@ -1,14 +1,17 @@
 /** @type {import('next').NextConfig} */
 
 const nextConfig = {
- webpack: (config) => {
-   config.module.rules.push({
-     test: /\.node/,
-     use: 'raw-loader',
-   });
+  experimental: {
+    serverActions: true,
+  },
+  webpack: (config) => {
+    config.module.rules.push({
+      test: /\.node/,
+      use: 'raw-loader',
+    })
 
-   return config;
- },
+    return config
+  },
 }
 
 module.exports = nextConfig

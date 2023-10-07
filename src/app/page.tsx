@@ -16,9 +16,9 @@ import Link from 'next/link'
 function App() {
   return (
     <ScrollContainer scrollAxis="y" height="100vh" scrollSnapType="y mandatory">
-      <HStack>
+      <HStack px={16} py={6}>
         <Link href="/">
-          <Img src="/readit.png" w={20} />
+          <Img src="/logo.png" w={40} />
         </Link>
       </HStack>
       <ScrollSection>
