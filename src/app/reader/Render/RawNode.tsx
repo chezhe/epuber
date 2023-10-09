@@ -88,7 +88,7 @@ export default function RawNode({
 
           if (node.nodeName === 'b') {
             return (
-              <Text fontWeight={600}>
+              <Text fontWeight={600} display={'inline'}>
                 <RawNode nodes={node.childNodes} />
               </Text>
             )
@@ -96,7 +96,7 @@ export default function RawNode({
 
           if (node.nodeName === 'i') {
             return (
-              <Text fontStyle={'italic'}>
+              <Text fontStyle={'italic'} display={'inline'}>
                 <RawNode nodes={node.childNodes} />
               </Text>
             )
@@ -104,7 +104,7 @@ export default function RawNode({
 
           if (node.nodeName === 'span') {
             return (
-              <Text>
+              <Text display={'inline'}>
                 <RawNode nodes={node.childNodes} />
               </Text>
             )
