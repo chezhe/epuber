@@ -11,6 +11,7 @@ import {
   Img,
   Divider,
 } from '@chakra-ui/react'
+// @ts-ignore
 import type { DocumentFragment } from 'parse5/dist/tree-adapters/default.d.ts'
 import { useContext } from 'react'
 
