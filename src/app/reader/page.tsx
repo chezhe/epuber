@@ -1,6 +1,6 @@
 'use client'
 
-import { HStack, Input, Text, VStack } from '@chakra-ui/react'
+import { HStack, Input, Spinner, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
 import { parseEpub } from './epub-parser'
 import { useEffect, useState } from 'react'
@@ -68,15 +68,9 @@ export default function Reader() {
             book={book}
           />
         ) : (
-          <VStack>
-            <HStack>
-              <Input
-                placeholder="Open Your .epub book"
-                type="file"
-                onChange={onFileChange}
-              />
-            </HStack>
-            <Text fontSize={24}>Sphinx of black quartz, judge my vow</Text>
+          <VStack pt={16}>
+            <Spinner size={'lg'} />
+            <Text>LOADING...</Text>
           </VStack>
         )}
       </VStack>

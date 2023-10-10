@@ -35,7 +35,7 @@ export default function ToolBar({
     <HStack justifyContent="space-between" bg="red.300" w="100%" px={6} py={4}>
       <HStack spacing={6}>
         <Link href="/books">
-          <Library size={24} color="#666" cursor="pointer" />
+          <Home size={24} color="#666" cursor="pointer" />
         </Link>
         <Link href="/reader/settings">
           <Settings size={24} color="#666" cursor="pointer" />
