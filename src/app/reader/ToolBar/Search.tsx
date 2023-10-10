@@ -38,8 +38,6 @@ export default function SearchBox({
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false })
   const [keyword, setKeyword] = useState('')
 
-  const search = useSearchParams()
-
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'k') {
@@ -123,7 +121,7 @@ export default function SearchBox({
               borderColor="transparent"
               width="100%"
               _focus={{ border: '0px' }}
-              color="black"
+              color="blackAlpha.800"
               fontSize={24}
               value={keyword}
               onChange={onChange}

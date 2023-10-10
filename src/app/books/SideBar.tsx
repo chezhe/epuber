@@ -1,5 +1,6 @@
 'use client'
 
+import useDark from '@/hooks/useDark'
 import { HStack, Img, VStack, Text, useColorMode } from '@chakra-ui/react'
 import {
   BookOpen,
@@ -45,13 +46,12 @@ const inspiration = [
 
 export default function SideBar() {
   const [active, setActive] = useState(library[0])
-  const mode = useColorMode()
-  console.log('theme', mode)
+  const dark = useDark()
 
   return (
     <VStack
       w={240}
-      bg="blackAlpha.300"
+      bg={dark ? 'blackAlpha.800' : 'blackAlpha.300'}
       justifyContent={'space-between'}
       h="100%"
       py={2}
@@ -121,6 +121,8 @@ function NavItem({
   isActive: boolean
   onClick: (param: { title: string; icon: React.ReactElement }) => void
 }) {
+  const dark = useDark()
+  const bg = dark ? 'blackAlpha.400' : 'blackAlpha.100'
   return (
     <HStack
       key={title}
@@ -128,9 +130,9 @@ function NavItem({
       pl={2}
       py={2}
       cursor={'pointer'}
-      bg={isActive ? 'blackAlpha.100' : 'transparent'}
+      bg={isActive ? bg : 'transparent'}
       _hover={{
-        bg: 'blackAlpha.100',
+        bg,
       }}
       onClick={() => onClick({ title, icon })}
     >

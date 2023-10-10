@@ -14,21 +14,31 @@ import {
 } from '@chakra-ui/react'
 import books from '@/utils/sample.json'
 import Link from 'next/link'
-import { Search } from 'lucide-react'
+import { Plus, Search } from 'lucide-react'
 import SideBar from './SideBar'
 import Login from './Login'
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 
-export default function Books() {
+export default async function Books() {
+  const supabase = createServerComponentClient({ cookies })
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
   return (
     <HStack h="100vh" gap={0} bg="whiteAlpha.900" alignItems={'flex-start'}>
       <SideBar />
       <VStack
         w="calc(100% - 240px)"
-        minH={'100vh'}
+        h={'100vh'}
         p={8}
         pt={2}
         alignItems={'flex-start'}
         overflowY={'scroll'}
+        bg={'blackAlpha.700'}
+        color={'whiteAlpha.900'}
       >
         <HStack
           w="100%"
@@ -49,7 +59,7 @@ export default function Books() {
               borderBottomWidth={1}
               pl={12}
               w={400}
-              color="blackAlpha.800"
+              fontSize={20}
               _active={{
                 outline: 'none',
                 borderWidth: 0,
@@ -63,15 +73,16 @@ export default function Books() {
               }}
             />
           </InputGroup>
-          <Login />
+
+          {!user ? (
+            <Login />
+          ) : (
+            <HStack>
+              <Plus size={24} color="gray" cursor={'pointer'} />
+            </HStack>
+          )}
         </HStack>
-        <Flex
-          w="100%"
-          gap={6}
-          flexFlow={'row wrap'}
-          overflowY={'scroll'}
-          alignItems={'flex-start'}
-        >
+        <Flex w="100%" gap={6} flexFlow={'row wrap'} alignItems={'flex-start'}>
           {books.map((book) => (
             <Link href={`/reader?book=${book.title}`}>
               <VStack minW={200} cursor={'pointer'}>
@@ -82,7 +93,7 @@ export default function Books() {
                   objectFit={'cover'}
                   boxShadow="md"
                 />
-                <Text color="blackAlpha.800">{book.title}</Text>
+                <Text>{book.title}</Text>
               </VStack>
             </Link>
           ))}

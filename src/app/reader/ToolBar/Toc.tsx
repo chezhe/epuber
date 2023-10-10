@@ -43,7 +43,7 @@ export default function Toc({
       <List size={24} color="#666" cursor="pointer" onClick={onOpen} />
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent>
+        <DrawerContent color="whiteAlpha.800" bg="gray.800">
           <DrawerCloseButton />
           <DrawerHeader>Table of Contents</DrawerHeader>
 
@@ -62,8 +62,8 @@ export default function Toc({
                       w="100%"
                       fontSize={18}
                       fontWeight={600}
-                      bg={isActive ? 'gray.100' : undefined}
-                      color={isActive ? 'blue.500' : 'blackAlpha.900'}
+                      bg={isActive ? 'blackAlpha.400' : undefined}
+                      color={isActive ? 'blue.500' : ''}
                       px={4}
                       py={2}
                       onClick={() => {
@@ -86,7 +86,7 @@ export default function Toc({
                               pl={8}
                               py={2}
                               cursor={'pointer'}
-                              bg={isActive ? 'gray.100' : undefined}
+                              bg={isActive ? 'blackAlpha.400' : undefined}
                               onClick={() => {
                                 setActiveChapter?.(_t)
                                 onClose()
@@ -95,7 +95,7 @@ export default function Toc({
                               <Text
                                 fontSize={16}
                                 fontWeight={600}
-                                color={isActive ? 'blue.500' : 'blackAlpha.900'}
+                                color={isActive ? 'blue.500' : ''}
                               >
                                 {_t.title}
                               </Text>

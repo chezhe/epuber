@@ -17,6 +17,7 @@ import {
   ModalHeader,
   useToast,
 } from '@chakra-ui/react'
+import Link from 'next/link'
 import { useState } from 'react'
 
 const emailRegex =
@@ -56,70 +57,63 @@ export default function Login() {
   return (
     <>
       <HStack>
-        <Button
-          variant={'outline'}
-          bg="red.300"
-          _hover={{ bg: 'red.400' }}
-          color="whiteAlpha.900"
-          borderRadius={2}
-          px={6}
-          onClick={() => {
-            setType('login')
-            onOpen()
-          }}
-        >
-          Login
-        </Button>
-        <Button
-          variant={'outline'}
-          _hover={{ bg: 'whiteAlpha.400' }}
-          color="blackAlpha.800"
-          borderRadius={2}
-          px={6}
-          onClick={() => {
-            setType('signup')
-            onOpen()
-          }}
-        >
-          Sign Up
-        </Button>
+        <Link href="/login">
+          <Button
+            variant={'outline'}
+            bg="red.300"
+            _hover={{ bg: 'red.400' }}
+            color="whiteAlpha.900"
+            borderRadius={2}
+            px={6}
+            onClick={() => {
+              setType('login')
+              onOpen()
+            }}
+          >
+            Login
+          </Button>
+        </Link>
+        <Link href="/signup">
+          <Button
+            variant={'outline'}
+            _hover={{ bg: 'whiteAlpha.400' }}
+            borderRadius={2}
+            px={6}
+            onClick={() => {
+              setType('signup')
+              onOpen()
+            }}
+          >
+            Sign Up
+          </Button>
+        </Link>
       </HStack>
 
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
           <ModalCloseButton color={'blackAlpha.800'} />
-          <ModalHeader
-            color="blackAlpha.800"
-            fontSize={32}
-            textAlign={'center'}
-          >
+          <ModalHeader fontSize={32} textAlign={'center'}>
             Welcome to epuber
           </ModalHeader>
           <VStack p={4} px={8}>
             <FormControl>
-              <FormLabel color="blackAlpha.800" fontWeight={600}>
-                Email
-              </FormLabel>
+              <FormLabel fontWeight={600}>Email</FormLabel>
               <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 borderRadius={2}
-                color={'blackAlpha.800'}
               />
             </FormControl>
 
             <FormControl>
-              <FormLabel color="blackAlpha.800" fontWeight={600}>
-                Password
-              </FormLabel>
+              <FormLabel fontWeight={600}>Password</FormLabel>
               <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 borderRadius={2}
-                color={'blackAlpha.800'}
               />
             </FormControl>
 
@@ -137,9 +131,7 @@ export default function Login() {
 
             <HStack w="100%">
               <Divider bg="red.300" />
-              <Text color="blackAlpha.500" fontWeight={600}>
-                OR
-              </Text>
+              <Text fontWeight={600}>OR</Text>
               <Divider bg="red.300" />
             </HStack>
           </VStack>
