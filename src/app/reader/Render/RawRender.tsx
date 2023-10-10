@@ -1,12 +1,12 @@
 import { Book, Chapter } from '@/types'
-import { Box, HStack, Text, VStack } from '@chakra-ui/react'
+import { Box, HStack, Text, VStack, useColorMode } from '@chakra-ui/react'
 import RawNode from './RawNode'
 import { parseFragment } from 'parse5'
 import { useEffect, useRef, useState } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import sanitizeHtml from 'sanitize-html'
-import { Highlighter, Languages } from 'lucide-react'
 import { useTextSelection } from 'use-text-selection'
+import Tools from './Tools'
 
 export default function RawRender({
   activeChapter,
@@ -19,6 +19,8 @@ export default function RawRender({
 }) {
   const scrollRef = useRef(null)
   const { clientRect, isCollapsed, textContent } = useTextSelection()
+  const mode = useColorMode()
+  console.log('theme', mode)
 
   useEffect(() => {
     document.getElementById('reader-wrap')?.scrollTo({
@@ -54,21 +56,7 @@ export default function RawRender({
       zIndex={1000}
     >
       <RawNode nodes={body.childNodes} />
-      {isCollapsed === false && (
-        <HStack
-          position={'absolute'}
-          left={clientRect?.left}
-          top={(clientRect?.y ?? 0) + (clientRect?.height ?? 0)}
-          bg="red.300"
-          p={2}
-          px={4}
-          gap={4}
-          borderRadius={2}
-        >
-          <Languages size={24} cursor={'pointer'} />
-          <Highlighter size={24} cursor={'pointer'} />
-        </HStack>
-      )}
+      {isCollapsed === false && <Tools />}
       <motion.div
         className="progress-bar"
         viewport={{ root: scrollRef }}

@@ -28,6 +28,7 @@ export default function Books() {
         p={8}
         pt={2}
         alignItems={'flex-start'}
+        overflowY={'scroll'}
       >
         <HStack
           w="100%"

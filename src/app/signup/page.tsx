@@ -1,18 +1,17 @@
 import {
   FormControl,
   FormLabel,
-  FormErrorMessage,
-  FormHelperText,
   VStack,
   Input,
   Button,
   Text,
+  HStack,
 } from '@chakra-ui/react'
 import Link from 'next/link'
 
-export default function Login() {
+export default function SignUp() {
   return (
-    <VStack
+    <HStack
       h="100vh"
       bg="red.300"
       alignItems={'center'}
@@ -30,13 +29,13 @@ export default function Login() {
         </FormControl>
 
         <Button w="100%" mt={4} colorScheme="teal" type="submit">
-          Login
+          Sign Up
         </Button>
 
         <Link href="/signup">
-          <Text color="blue.600">{"Don't have a account? Sign Up"}</Text>
+          <Text color="blue.600">{'Already have a account? Login now.'}</Text>
         </Link>
       </VStack>
-    </VStack>
+    </HStack>
   )
 }

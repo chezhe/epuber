@@ -1,6 +1,6 @@
 'use client'
 
-import { HStack, Img, Input, VStack, Text } from '@chakra-ui/react'
+import { HStack, Img, VStack, Text, useColorMode } from '@chakra-ui/react'
 import {
   BookOpen,
   CheckCircle,
@@ -9,8 +9,9 @@ import {
   Plus,
   Settings,
   StickyNote,
+  Tags,
 } from 'lucide-react'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 const library = [
   {
@@ -36,10 +37,17 @@ const inspiration = [
     icon: <StickyNote size={18} />,
     title: 'Notes',
   },
+  {
+    icon: <Tags size={18} />,
+    title: 'Tags',
+  },
 ]
 
 export default function SideBar() {
   const [active, setActive] = useState(library[0])
+  const mode = useColorMode()
+  console.log('theme', mode)
+
   return (
     <VStack
       w={240}
@@ -58,23 +66,12 @@ export default function SideBar() {
             Library
           </Text>
           {library.map((item) => (
-            <HStack
+            <NavItem
               key={item.title}
-              w="100%"
-              pl={2}
-              py={2}
-              cursor={'pointer'}
-              bg={
-                active.title === item.title ? 'blackAlpha.100' : 'transparent'
-              }
-              _hover={{
-                bg: 'blackAlpha.100',
-              }}
-              onClick={() => setActive(item)}
-            >
-              {item.icon}
-              <Text>{item.title}</Text>
-            </HStack>
+              {...item}
+              isActive={item.title === active.title}
+              onClick={setActive}
+            />
           ))}
         </VStack>
 
@@ -83,23 +80,12 @@ export default function SideBar() {
             Inspiration
           </Text>
           {inspiration.map((item) => (
-            <HStack
+            <NavItem
               key={item.title}
-              w="100%"
-              pl={2}
-              py={2}
-              cursor={'pointer'}
-              bg={
-                active.title === item.title ? 'blackAlpha.100' : 'transparent'
-              }
-              _hover={{
-                bg: 'blackAlpha.100',
-              }}
-              onClick={() => setActive(item)}
-            >
-              {item.icon}
-              <Text>{item.title}</Text>
-            </HStack>
+              {...item}
+              isActive={item.title === active.title}
+              onClick={setActive}
+            />
           ))}
         </VStack>
 
@@ -113,19 +99,43 @@ export default function SideBar() {
         </VStack>
       </VStack>
       <VStack w="100%">
-        <HStack
-          w="100%"
-          px={2}
-          py={2}
-          _hover={{
-            bg: 'blackAlpha.100',
-          }}
-          cursor={'pointer'}
-        >
-          <Settings />
-          <Text>Settings</Text>
-        </HStack>
+        <NavItem
+          title="Settings"
+          icon={<Settings />}
+          isActive={'Settings' === active.title}
+          onClick={setActive}
+        />
       </VStack>
     </VStack>
+  )
+}
+
+function NavItem({
+  icon,
+  title,
+  isActive,
+  onClick,
+}: {
+  icon: React.ReactElement
+  title: string
+  isActive: boolean
+  onClick: (param: { title: string; icon: React.ReactElement }) => void
+}) {
+  return (
+    <HStack
+      key={title}
+      w="100%"
+      pl={2}
+      py={2}
+      cursor={'pointer'}
+      bg={isActive ? 'blackAlpha.100' : 'transparent'}
+      _hover={{
+        bg: 'blackAlpha.100',
+      }}
+      onClick={() => onClick({ title, icon })}
+    >
+      {icon}
+      <Text>{title}</Text>
+    </HStack>
   )
 }

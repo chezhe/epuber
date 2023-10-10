@@ -51,7 +51,7 @@ export default function RawNode({
         })
         .map((node, idx) => {
           if (node.nodeName === 'br') {
-            return <br />
+            return <br key={idx} />
           }
           if (node.nodeName === 'hr') {
             return <Divider key={idx} h={1} bg="blue.300" my={16} />
@@ -88,7 +88,7 @@ export default function RawNode({
 
           if (node.nodeName === 'b') {
             return (
-              <Text fontWeight={600} display={'inline'}>
+              <Text key={idx} fontWeight={600} display={'inline'}>
                 <RawNode nodes={node.childNodes} />
               </Text>
             )
@@ -96,7 +96,7 @@ export default function RawNode({
 
           if (node.nodeName === 'i') {
             return (
-              <Text fontStyle={'italic'} display={'inline'}>
+              <Text key={idx} fontStyle={'italic'} display={'inline'}>
                 <RawNode nodes={node.childNodes} />
               </Text>
             )
@@ -104,7 +104,7 @@ export default function RawNode({
 
           if (node.nodeName === 'span') {
             return (
-              <Text display={'inline'}>
+              <Text key={idx} display={'inline'}>
                 <RawNode nodes={node.childNodes} />
               </Text>
             )

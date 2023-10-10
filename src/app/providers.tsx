@@ -10,6 +10,10 @@ const theme = extendTheme({
     heading: `'Inconsolata', sans-serif`,
     body: `'Inconsolata', sans-serif`,
   },
+  config: {
+    initialColorMode: 'system',
+    useSystemColorMode: true,
+  },
 })
 
 export function Providers({ children }: { children: React.ReactNode }) {
