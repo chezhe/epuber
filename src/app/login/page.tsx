@@ -13,6 +13,7 @@ import {
   useToast,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Login() {
@@ -22,6 +23,7 @@ export default function Login() {
 
   const toast = useToast()
 
+  const router = useRouter()
   const onSubmit = async () => {
     try {
       setConfirming(true)
@@ -39,7 +41,9 @@ export default function Login() {
         method: 'POST',
         body: formdata,
       }).then((res) => res.json())
-      console.log('result', result)
+      if (result.status === 'ok') {
+        router.replace('/books')
+      }
       setConfirming(false)
     } catch (error) {
       toast({
@@ -80,7 +84,7 @@ export default function Login() {
           isLoading={confirming}
           onClick={onSubmit}
         >
-          Sign Up
+          Login
         </Button>
 
         <Link href="/signup">
