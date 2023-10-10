@@ -1,8 +1,6 @@
 import { BookContext } from '@/hooks/BookContext'
 import {
-  List,
   ListItem,
-  ListIcon,
   OrderedList,
   UnorderedList,
   Text,
