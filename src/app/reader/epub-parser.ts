@@ -40,11 +40,14 @@ export async function parseEpub(file?: File) {
   const images = await Promise.all(
     imageKeys.map(async (key) => {
       const file = detail.files[key]
-      const blob = await file.async('blob')
-      const url = URL.createObjectURL(blob)
-      return {
-        key,
-        url,
+      if (file) {
+        const blob = await file.async('blob')
+        const url = URL.createObjectURL(blob)
+
+        return {
+          key,
+          url,
+        }
       }
     })
   )
@@ -76,9 +79,9 @@ function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
     const md = metadata[0]
     return {
       title: extractValue(md['dc:title']),
-      author: extractValue(md['dc:creator']),
-      publisher: extractValue(md['dc:publisher']),
-      language: extractValue(md['dc:language']),
+      author: (md['dc:creator'] || [])?.map(extractValue),
+      publisher: (md['dc:publisher'] || [])?.map(extractValue),
+      language: (md['dc:language'] || [])?.map(extractValue),
       description: extractValue(md['description']),
       rights: extractValue(md['dc:rights']),
     }
@@ -87,7 +90,7 @@ function getMetadata(metadata: any[], ncx: any): Metadata | undefined {
   if (ncx.ncx) {
     return {
       title: ncx.ncx.docTitle[0]['text'][0],
-      author: ncx.ncx.docAuthor[0]['text'][0],
+      author: ncx.ncx.docAuthor.map((t: any) => t['text']),
     }
   }
 }

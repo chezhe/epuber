@@ -54,7 +54,7 @@ export default function SideBar() {
       bg={dark ? 'blackAlpha.800' : 'blackAlpha.300'}
       justifyContent={'space-between'}
       h="100%"
-      py={2}
+      py={4}
     >
       <VStack w="100%" gap={6}>
         <HStack w="100%" justifyContent={'center'} px={2}>

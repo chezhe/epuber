@@ -1,8 +1,8 @@
 export interface Metadata {
   title: string
-  author: string
-  publisher?: string
-  language?: string
+  author: string[]
+  publisher?: string[]
+  language?: string[]
   description?: string
   rights?: string
 }
