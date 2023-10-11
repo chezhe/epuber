@@ -16,9 +16,9 @@ import books from '@/utils/sample.json'
 import Link from 'next/link'
 import { Plus, Search } from 'lucide-react'
 import SideBar from './SideBar'
-import Login from './Login'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
+import Upload from './Upload'
 
 export const dynamic = 'force-dynamic'
 
@@ -76,11 +76,34 @@ export default async function Books() {
             />
           </InputGroup>
 
-          {!user ? (
-            <Login />
+          {user !== null ? (
+            <HStack>
+              <Upload />
+            </HStack>
           ) : (
             <HStack>
-              <Plus size={24} color="gray" cursor={'pointer'} />
+              <Link href="/login">
+                <Button
+                  variant={'outline'}
+                  bg="red.300"
+                  _hover={{ bg: 'red.400' }}
+                  color="whiteAlpha.900"
+                  borderRadius={2}
+                  px={6}
+                >
+                  Login
+                </Button>
+              </Link>
+              <Link href="/signup">
+                <Button
+                  variant={'outline'}
+                  _hover={{ bg: 'whiteAlpha.400' }}
+                  borderRadius={2}
+                  px={6}
+                >
+                  Sign Up
+                </Button>
+              </Link>
             </HStack>
           )}
         </HStack>

@@ -65,7 +65,7 @@ export default function RawNode({
                 my={4}
                 mx={6}
                 borderLeftColor={'blue.400'}
-                bg="gray.200"
+                bg="whiteAlpha.300"
                 fontStyle={'italic'}
                 fontSize={'smaller'}
               >

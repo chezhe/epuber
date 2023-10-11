@@ -1,6 +1,6 @@
 'use client'
 
-import { HStack, Input, Spinner, Text, VStack } from '@chakra-ui/react'
+import { Spinner, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
 import { parseEpub } from './epub-parser'
 import { useEffect, useState } from 'react'
@@ -36,14 +36,11 @@ export default function Reader() {
     if (bookName) {
       const bk = books.find((b) => b.title === bookName)
       if (bk) {
-        console.log('bookName', bookName, bk.file)
-
         fetch(bk.file)
           .then((res) => res.blob())
           .then((blob) => {
             const file = new File([blob], bk.title)
             parseEpub(file).then((book) => {
-              console.log('book', book)
               setBook(book)
               setActiveChapter(book.chapters[0])
             })
