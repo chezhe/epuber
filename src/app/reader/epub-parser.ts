@@ -37,7 +37,7 @@ export async function parseEpub(file?: File) {
   const imageKeys = fileKeys.filter((key) => {
     return ['jpeg', 'jpg', 'png'].includes(key.split('.').pop() || '')
   })
-  const images = await Promise.all(
+  let images = await Promise.all(
     imageKeys.map(async (key) => {
       const file = detail.files[key]
       if (file) {
@@ -51,6 +51,7 @@ export async function parseEpub(file?: File) {
       }
     })
   )
+  images = images.filter((i) => i)
   return {
     metadata,
     chapters,

@@ -19,7 +19,7 @@ export default function Reader() {
       const book = await parseEpub(file)
       console.log('book', book)
 
-      setBook(book)
+      setBook(book as Book)
       setActiveChapter(book.chapters[0])
     } catch (error) {
       console.log('error', error)
