@@ -17,14 +17,12 @@ export default function ThemeBox() {
   return (
     <>
       <CaseSensitive size={24} color="#666" cursor="pointer" onClick={onOpen} />
-      <Modal size="lg" isOpen={isOpen} onClose={onClose}>
+      <Modal size="lg" isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent
           justifyContent="center"
           alignItems="center"
-          mt={24}
           borderRadius={2}
-          p={8}
         >
           <ModalCloseButton />
           <ModalHeader>Theme</ModalHeader>

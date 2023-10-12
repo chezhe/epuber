@@ -60,17 +60,31 @@ export default function Upload() {
       )
       const validBooks = books.filter(Boolean) as TmpBook[]
       setBooks(validBooks)
+      console.log('validBooks', validBooks)
 
       const blobs = await Promise.all(
-        validBooks.map(async ({ file }) => {
-          const newBlob = await upload(file.name, file, {
-            access: 'public',
-            handleUploadUrl: '/api/upload/book',
-          })
-          return newBlob
+        validBooks.map(async ({ file, book }) => {
+          try {
+            const cover = book.images.find((i) => i.key.includes('cover'))
+            if (cover) {
+              const coverFile = await fetch(cover.url).then((res) =>
+                res.arrayBuffer()
+              )
+              console.log('coverFile', cover.url, coverFile)
+            }
+            // const newBlob = await upload(file.name, file, {
+            //   access: 'public',
+            //   handleUploadUrl: '/api/upload/book',
+            // })
+            // return newBlob
+          } catch (error) {
+            return null
+          }
         })
       )
       console.log('blobs', blobs)
+      // create a record for book table in supabase
+      // create a record for book_image table in supabase
       onClose()
       setHandling(false)
     } catch (error) {

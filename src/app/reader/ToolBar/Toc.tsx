@@ -15,6 +15,7 @@ import {
   HStack,
 } from '@chakra-ui/react'
 import { useEffect } from 'react'
+import useDark from '@/hooks/useDark'
 
 export default function Toc({
   chapters,
@@ -26,7 +27,7 @@ export default function Toc({
   setActiveChapter?: (chapter: Chapter) => void
 }) {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false })
-
+  const dark = useDark()
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if ((event.metaKey || event.ctrlKey) && event.key === 'l') {
@@ -43,7 +44,10 @@ export default function Toc({
       <List size={24} color="#666" cursor="pointer" onClick={onOpen} />
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
-        <DrawerContent color="whiteAlpha.800" bg="gray.800">
+        <DrawerContent
+          color={!dark ? 'blackAlpha.800' : 'whiteAlpha.800'}
+          bg={!dark ? 'gray.200' : 'gray.800'}
+        >
           <DrawerCloseButton />
           <DrawerHeader>Table of Contents</DrawerHeader>
 
