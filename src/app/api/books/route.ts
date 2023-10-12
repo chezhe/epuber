@@ -1,0 +1,13 @@
+import { sql } from '@vercel/postgres'
+import { NextResponse } from 'next/server'
+
+export async function GET(request: Request) {
+  try {
+    // const result = await sql`DROP TABLE IF EXISTS books;`
+    const result =
+      await sql`CREATE TABLE book4 (uid VARCHAR(255) NOT NULL, title VARCHAR(255) NOT NULL, author VARCHAR(255), file VARCHAR(255) NOT NULL, cover VARCHAR(255), publisher VARCHAR(255), language VARCHAR(255), description TEXT, rights VARCHAR(255) );`
+    return NextResponse.json({ result }, { status: 200 })
+  } catch (error) {
+    return NextResponse.json({ error }, { status: 500 })
+  }
+}

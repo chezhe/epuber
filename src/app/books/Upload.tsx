@@ -1,6 +1,5 @@
 'use client'
 
-import { type PutBlobResult } from '@vercel/blob'
 import { upload } from '@vercel/blob/client'
 import { Plus } from 'lucide-react'
 import { parseEpub } from '../reader/epub-parser'
@@ -22,13 +21,15 @@ import {
   Spinner,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
+import { sql } from '@vercel/postgres'
+import { User } from '@supabase/supabase-js'
 
 interface TmpBook {
   book: Book
   file: File
 }
 
-export default function Upload() {
+export default function Upload({ user }: { user: User | null }) {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const inputRef = useRef(null)
   const [books, setBooks] = useState<TmpBook[]>([])
@@ -62,27 +63,41 @@ export default function Upload() {
       setBooks(validBooks)
       console.log('validBooks', validBooks)
 
-      const blobs = await Promise.all(
+      await Promise.all(
         validBooks.map(async ({ file, book }) => {
           try {
-            const cover = book.images.find((i) => i.key.includes('cover'))
-            if (cover) {
-              const coverFile = await fetch(cover.url).then((res) =>
-                res.arrayBuffer()
-              )
-              console.log('coverFile', cover.url, coverFile)
-            }
+            // const cover = book.images.find((i) => i.key.includes('cover'))
+            // if (cover) {
+            //   const coverFile = await fetch(cover.url).then((res) =>
+            //     res.arrayBuffer()
+            //   )
+            //   console.log('coverFile', cover.url, coverFile)
+            // }
             // const newBlob = await upload(file.name, file, {
             //   access: 'public',
             //   handleUploadUrl: '/api/upload/book',
             // })
-            // return newBlob
+            const fileUrl = '' //newBlob.url
+            await fetch('/api/books/create', {
+              method: 'POST',
+              body: JSON.stringify({
+                user: user?.id,
+                title: book.metadata?.title,
+                author: book.metadata?.author,
+                file: fileUrl,
+                cover: '',
+                publisher: book.metadata?.publisher,
+                language: book.metadata?.language,
+                description: book.metadata?.description,
+                rights: book.metadata?.rights,
+              }),
+            })
           } catch (error) {
-            return null
+            console.log('error', error)
           }
         })
       )
-      console.log('blobs', blobs)
+
       // create a record for book table in supabase
       // create a record for book_image table in supabase
       onClose()

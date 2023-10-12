@@ -67,7 +67,7 @@ export default function Shelf({ user }: { user: User | null }) {
 
         {user !== null ? (
           <HStack>
-            <Upload />
+            <Upload user={user} />
           </HStack>
         ) : (
           <HStack>

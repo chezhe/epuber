@@ -21,6 +21,7 @@
     "@supabase/auth-ui-shared": "^0.1.7",
     "@supabase/supabase-js": "^2.38.0",
     "@vercel/blob": "^0.13.0",
+    "@vercel/postgres": "^0.5.0",
     "epub": "^1.2.1",
     "fast-xml-parser": "^4.3.2",
     "framer-motion": "^10.16.4",
