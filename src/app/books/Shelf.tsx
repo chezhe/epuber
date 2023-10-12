@@ -29,7 +29,7 @@ export default function Shelf({ user }: { user: User | null }) {
       alignItems={'flex-start'}
       overflowY={'scroll'}
       bg={!dark ? 'whiteAlpha.700' : 'blackAlpha.700'}
-      color={'whiteAlpha.900'}
+      color={!dark ? 'blackAlpha.800' : 'whiteAlpha.800'}
     >
       <HStack
         w="100%"
@@ -99,15 +99,18 @@ export default function Shelf({ user }: { user: User | null }) {
       <Flex w="100%" gap={6} flexFlow={'row wrap'} alignItems={'flex-start'}>
         {books.map((book) => (
           <Link href={`/reader?book=${book.title}`}>
-            <VStack minW={200} cursor={'pointer'}>
+            <VStack minW={200} cursor={'pointer'} role="group" _groupHover={{}}>
               <Img
                 src={book.cover}
                 w={200}
                 h={260}
                 objectFit={'cover'}
                 boxShadow="md"
+                _groupHover={{
+                  boxShadow: 'outline',
+                }}
               />
-              <Text>{book.title}</Text>
+              <Text _groupHover={{ fontWeight: 600 }}>{book.title}</Text>
             </VStack>
           </Link>
         ))}

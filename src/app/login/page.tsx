@@ -88,7 +88,7 @@ export default function Login() {
         </Button>
 
         <Link href="/signup">
-          <Text color="blue.300">{'Already have a account? Login now.'}</Text>
+          <Text color="blue.300">{'Already have a account? Sign up now.'}</Text>
         </Link>
       </VStack>
     </HStack>
