@@ -41,7 +41,7 @@ export default function Reader() {
           .then((blob) => {
             const file = new File([blob], bk.title)
             parseEpub(file).then((book) => {
-              setBook(book)
+              setBook(book as Book)
               setActiveChapter(book.chapters[0])
             })
           })
