@@ -15,18 +15,18 @@ export async function POST(request: Request) {
       throw new Error('Not authorized')
     }
     const uid = user.id
-    const author = JSON.stringify(data.author) || ''
-    const publisher = JSON.stringify(data.publisher) || ''
-    const language = JSON.stringify(data.language) || ''
-    const title = data.title || ''
-    const rights = data.rights || ''
-    const description = data.description || ''
-    const cover = data.cover || ''
-    const file = data.file
+    const author = JSON.stringify(data.author) || '[]'
+    const publisher = JSON.stringify(data.publisher) || '[]'
+    const language = JSON.stringify(data.language) || '[]'
+    const title = data.title || '-'
+    const rights = data.rights || '-'
+    const description = data.description || '-'
+    const cover = data.cover || '-'
+    const file = data.file || '-'
 
-    await sql`INSERT INTO book11 (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
+    await sql`INSERT INTO ebooks (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
 
-    const result = await sql`SELECT * FROM book11 WHERE uid = ${uid} LIMIT 10;`
+    const result = await sql`SELECT * FROM ebooks WHERE uid = ${uid} LIMIT 10;`
     return NextResponse.json({ books: result.rows }, { status: 200 })
   } catch (error) {
     console.log('error', error)

@@ -66,25 +66,30 @@ export default function Upload({ user }: { user: User | null }) {
       await Promise.all(
         validBooks.map(async ({ file, book }) => {
           try {
-            // const cover = book.images.find((i) => i.key.includes('cover'))
-            // if (cover) {
-            //   const coverFile = await fetch(cover.url).then((res) =>
-            //     res.arrayBuffer()
-            //   )
-            //   console.log('coverFile', cover.url, coverFile)
-            // }
-            const newBlob = await upload(file.name, file, {
+            const cover = book.images.find((i) => i.key.includes('cover'))
+            let coverUrl = ''
+            if (cover) {
+              const coverFile = await fetch(cover.url).then((res) => res.blob())
+              console.log('coverFile', cover.url, coverFile)
+
+              const coverBlob = await upload(cover.key, coverFile, {
+                access: 'public',
+                handleUploadUrl: '/api/upload/cover',
+              })
+              coverUrl = coverBlob.url
+            }
+            const bookBlob = await upload(file.name, file, {
               access: 'public',
               handleUploadUrl: '/api/upload/book',
             })
-            const fileUrl = newBlob.url
+            const fileUrl = bookBlob.url
             await fetch('/api/books/create', {
               method: 'POST',
               body: JSON.stringify({
                 title: book.metadata?.title,
                 author: book.metadata?.author,
                 file: fileUrl,
-                cover: '',
+                cover: coverUrl,
                 publisher: book.metadata?.publisher,
                 language: book.metadata?.language,
                 description: book.metadata?.description,

@@ -21,14 +21,14 @@ export interface Book {
   images: { key: string; url: string }[]
 }
 
-interface SQLBook {
+export interface SQLBook {
   id: number
   title: string
   author: string[]
-  file: string
-  cover: string
   publisher?: string[]
   language?: string[]
+  file: string
+  cover: string
   description?: string
   rights?: string
 }

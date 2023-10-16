@@ -16,17 +16,27 @@ import { User } from '@supabase/supabase-js'
 import { Search } from 'lucide-react'
 import Upload from './Upload'
 import Link from 'next/link'
-import books from '@/utils/sample.json'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { SQLBook } from '@/types'
 
 export default function Shelf({ user }: { user: User | null }) {
+  const [books, setBooks] = useState<SQLBook[]>([])
+
   const dark = useDark()
 
   useEffect(() => {
     async function fetchBooks() {
       fetch('/api/books/list')
         .then((res) => res.json())
-        .then((res) => console.log(res))
+        .then((res) => {
+          const books = res.books.map((b: any) => ({
+            ...b,
+            author: JSON.parse(b.author),
+            publisher: JSON.parse(b.publisher),
+            language: JSON.stringify(b.language),
+          }))
+          setBooks(books)
+        })
         .catch((err) => console.log(err))
     }
 

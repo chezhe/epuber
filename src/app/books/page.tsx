@@ -3,6 +3,8 @@ import SideBar from './SideBar'
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 import Shelf from './Shelf'
+import { useState } from 'react'
+import { SQLBook } from '@/types'
 
 export const dynamic = 'force-dynamic'
 
