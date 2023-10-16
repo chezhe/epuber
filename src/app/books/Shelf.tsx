@@ -17,9 +17,22 @@ import { Search } from 'lucide-react'
 import Upload from './Upload'
 import Link from 'next/link'
 import books from '@/utils/sample.json'
+import { useEffect } from 'react'
 
 export default function Shelf({ user }: { user: User | null }) {
   const dark = useDark()
+
+  useEffect(() => {
+    async function fetchBooks() {
+      fetch('/api/books/list')
+        .then((res) => res.json())
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err))
+    }
+
+    fetchBooks()
+  }, [])
+
   return (
     <VStack
       w="calc(100% - 240px)"

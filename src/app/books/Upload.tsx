@@ -73,15 +73,14 @@ export default function Upload({ user }: { user: User | null }) {
             //   )
             //   console.log('coverFile', cover.url, coverFile)
             // }
-            // const newBlob = await upload(file.name, file, {
-            //   access: 'public',
-            //   handleUploadUrl: '/api/upload/book',
-            // })
-            const fileUrl = '' //newBlob.url
+            const newBlob = await upload(file.name, file, {
+              access: 'public',
+              handleUploadUrl: '/api/upload/book',
+            })
+            const fileUrl = newBlob.url
             await fetch('/api/books/create', {
               method: 'POST',
               body: JSON.stringify({
-                user: user?.id,
                 title: book.metadata?.title,
                 author: book.metadata?.author,
                 file: fileUrl,
