@@ -13,14 +13,16 @@ import {
   InputLeftElement,
 } from '@chakra-ui/react'
 import { User } from '@supabase/supabase-js'
-import { Search } from 'lucide-react'
+import { MoreHorizontal, Search } from 'lucide-react'
 import Upload from './Upload'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { SQLBook } from '@/types'
+import Editor from './Editor'
 
 export default function Shelf({ user }: { user: User | null }) {
   const [books, setBooks] = useState<SQLBook[]>([])
+  const [managing, setManaging] = useState<SQLBook>()
 
   const dark = useDark()
 
@@ -133,10 +135,24 @@ export default function Shelf({ user }: { user: User | null }) {
                   boxShadow: 'outline',
                 }}
               />
-              <Text _groupHover={{ fontWeight: 600 }}>{book.title}</Text>
+              <HStack
+                w="100%"
+                justifyContent={'space-between'}
+                onClick={(e) => e.preventDefault()}
+              >
+                <Text _groupHover={{ fontWeight: 600 }} isTruncated maxW={140}>
+                  {book.title}
+                </Text>
+                <MoreHorizontal
+                  size={24}
+                  color="gray"
+                  onClick={() => setManaging(book)}
+                />
+              </HStack>
             </VStack>
           </Link>
         ))}
+        <Editor book={managing} onClose={() => setManaging(undefined)} />
       </Flex>
     </VStack>
   )
