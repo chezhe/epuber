@@ -20,7 +20,6 @@ export default function RawRender({
   const scrollRef = useRef(null)
   const { clientRect, isCollapsed, textContent } = useTextSelection()
   const mode = useColorMode()
-  console.log('theme', mode)
 
   useEffect(() => {
     document.getElementById('reader-wrap')?.scrollTo({
@@ -40,8 +39,6 @@ export default function RawRender({
   const { scrollYProgress } = useScroll({
     container: scrollRef,
   })
-
-  console.log('clientRect', clientRect, isCollapsed, textContent)
 
   return (
     <Box

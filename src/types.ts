@@ -32,3 +32,7 @@ export interface SQLBook {
   description?: string
   rights?: string
 }
+
+export enum SubEvent {
+  REFRESH_BOOKS = 'REFRESH_BOOKS',
+}

@@ -7,24 +7,13 @@ import { useEffect, useState } from 'react'
 import { Book, Chapter } from '@/types'
 import RawRender from './Render/RawRender'
 import { useSearchParams } from 'next/navigation'
-import books from '@/utils/sample.json'
 import { BookContext } from '@/hooks/BookContext'
+import useBooks from '@/hooks/useBooks'
 
 export default function Reader() {
+  const books = useBooks()
   const [book, setBook] = useState<Book>()
   const [activeChapter, setActiveChapter] = useState<Chapter>()
-  const onFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    try {
-      const file = e.target.files?.[0]
-      const book = await parseEpub(file)
-      console.log('book', book)
-
-      setBook(book as Book)
-      setActiveChapter(book.chapters[0])
-    } catch (error) {
-      console.log('error', error)
-    }
-  }
 
   const query = useSearchParams()
   const bookName = query.get('book')

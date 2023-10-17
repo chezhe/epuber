@@ -11,6 +11,8 @@ import {
   Button,
   InputGroup,
   InputLeftElement,
+  Box,
+  Center,
 } from '@chakra-ui/react'
 import { User } from '@supabase/supabase-js'
 import { MoreHorizontal, Search } from 'lucide-react'
@@ -19,31 +21,13 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { SQLBook } from '@/types'
 import Editor from './Editor'
+import useBooks from '@/hooks/useBooks'
 
 export default function Shelf({ user }: { user: User | null }) {
-  const [books, setBooks] = useState<SQLBook[]>([])
   const [managing, setManaging] = useState<SQLBook>()
 
   const dark = useDark()
-
-  useEffect(() => {
-    async function fetchBooks() {
-      fetch('/api/books/list')
-        .then((res) => res.json())
-        .then((res) => {
-          const books = res.books.map((b: any) => ({
-            ...b,
-            author: JSON.parse(b.author),
-            publisher: JSON.parse(b.publisher),
-            language: JSON.stringify(b.language),
-          }))
-          setBooks(books)
-        })
-        .catch((err) => console.log(err))
-    }
-
-    fetchBooks()
-  }, [])
+  const books = useBooks()
 
   return (
     <VStack
@@ -125,22 +109,47 @@ export default function Shelf({ user }: { user: User | null }) {
         {books.map((book) => (
           <Link href={`/reader?book=${book.title}`}>
             <VStack minW={200} cursor={'pointer'} role="group" _groupHover={{}}>
-              <Img
-                src={book.cover}
-                w={200}
-                h={260}
-                objectFit={'cover'}
-                boxShadow="md"
-                _groupHover={{
-                  boxShadow: 'outline',
-                }}
-              />
+              {book.cover.startsWith('https') ? (
+                <Img
+                  src={book.cover}
+                  w={200}
+                  h={260}
+                  objectFit={'cover'}
+                  boxShadow="md"
+                  _groupHover={{
+                    boxShadow: 'outline',
+                    transform: 'translateY(-5px)',
+                  }}
+                />
+              ) : (
+                <Center
+                  w={200}
+                  h={260}
+                  bg="red.300"
+                  color="white"
+                  _groupHover={{
+                    boxShadow: 'outline',
+                    transform: 'translateY(-5px)',
+                  }}
+                >
+                  <Text fontSize={32} fontWeight={600}>
+                    {book.title}
+                  </Text>
+                </Center>
+              )}
               <HStack
                 w="100%"
                 justifyContent={'space-between'}
                 onClick={(e) => e.preventDefault()}
               >
-                <Text _groupHover={{ fontWeight: 600 }} isTruncated maxW={140}>
+                <Text
+                  _groupHover={{
+                    fontWeight: 600,
+                    transform: 'translateY(-5px)',
+                  }}
+                  isTruncated
+                  maxW={140}
+                >
                   {book.title}
                 </Text>
                 <MoreHorizontal

@@ -61,12 +61,19 @@ export default function Toc({
                     w="100%"
                     justifyContent={'space-between'}
                     cursor={'pointer'}
+                    pr={2}
                   >
                     <Text
                       w="100%"
                       fontSize={18}
                       fontWeight={600}
-                      bg={isActive ? 'blackAlpha.400' : undefined}
+                      bg={
+                        isActive
+                          ? dark
+                            ? 'blackAlpha.400'
+                            : 'blackAlpha.200'
+                          : undefined
+                      }
                       color={isActive ? 'blue.500' : ''}
                       px={4}
                       py={2}
@@ -90,7 +97,13 @@ export default function Toc({
                               pl={8}
                               py={2}
                               cursor={'pointer'}
-                              bg={isActive ? 'blackAlpha.400' : undefined}
+                              bg={
+                                isActive
+                                  ? dark
+                                    ? 'blackAlpha.400'
+                                    : 'blackAlpha.200'
+                                  : undefined
+                              }
                               onClick={() => {
                                 setActiveChapter?.(_t)
                                 onClose()

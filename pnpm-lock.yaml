@@ -38,6 +38,9 @@ dependencies:
   '@supabase/supabase-js':
     specifier: ^2.38.0
     version: 2.38.0
+  '@types/pubsub-js':
+    specifier: ^1.8.4
+    version: 1.8.4
   '@vercel/blob':
     specifier: ^0.13.0
     version: 0.13.0
@@ -53,6 +56,9 @@ dependencies:
   framer-motion:
     specifier: ^10.16.4
     version: 10.16.4(react-dom@18.2.0)(react@18.2.0)
+  jotai:
+    specifier: ^2.4.3
+    version: 2.4.3(@types/react@18.2.24)(react@18.2.0)
   jszip:
     specifier: ^3.10.1
     version: 3.10.1
@@ -74,6 +80,9 @@ dependencies:
   pdfjs-dist:
     specifier: ^3.11.174
     version: 3.11.174
+  pubsub-js:
+    specifier: ^1.9.4
+    version: 1.9.4
   react:
     specifier: ^18.2.0
     version: 18.2.0
@@ -2989,6 +2998,10 @@ packages:
   /@types/prop-types@15.7.8:
     resolution: {integrity: sha512-kMpQpfZKSCBqltAJwskgePRaYRFukDkm1oItcAbC3gNELR20XIBcN9VRgg4+m8DKsTfkWeA4m4Imp4DDuWy7FQ==}
 
+  /@types/pubsub-js@1.8.4:
+    resolution: {integrity: sha512-siB0BZHr4njBhNO3Ah1LQR5gs1Yg4vK0BWSZnAtFQQ3gpeuwi/X+JAPoEknFQxrmM9hARvxREmv66Z0iEzoF7w==}
+    dev: false
+
   /@types/react-dom@18.2.8:
     resolution: {integrity: sha512-bAIvO5lN/U8sPGvs1Xm61rlRHHaq5rp5N3kp9C+NJ/Q41P8iqjkXSu0+/qu8POsjH9pNWb0OYabFez7taP7omw==}
     dependencies:
@@ -5365,6 +5378,22 @@ packages:
     resolution: {integrity: sha512-IY73F228OXRl9ar3jJagh7Vnuhj/GzBunPiZP13K0lOl7Am9SoWW3kEzq3MCllJMTtZqHTiDXQvoRd4U95aU6A==}
     dev: false
 
+  /jotai@2.4.3(@types/react@18.2.24)(react@18.2.0):
+    resolution: {integrity: sha512-CSAHX9LqWG5WCrU8OgBoZbBJ+Bo9rQU0mPusEF4e0CZ/SNFgurG26vb3UpgvCSJZgYVcUQNiUBM5q86PA8rstQ==}
+    engines: {node: '>=12.20.0'}
+    peerDependencies:
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+      react:
+        optional: true
+    dependencies:
+      '@types/react': 18.2.24
+      react: 18.2.0
+    dev: false
+
   /js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
 
@@ -6475,6 +6504,10 @@ packages:
 
   /psl@1.9.0:
     resolution: {integrity: sha512-E/ZsdU4HLs/68gYzgGTkMicWTLPdAftJLfJFlLUAAKZGkStNU72sZjT66SnMDVOfOWY/YAoiD7Jxa9iHvngcag==}
+    dev: false
+
+  /pubsub-js@1.9.4:
+    resolution: {integrity: sha512-hJYpaDvPH4w8ZX/0Fdf9ma1AwRgU353GfbaVfPjfJQf1KxZ2iHaHl3fAUw1qlJIR5dr4F3RzjGaWohYUEyoh7A==}
     dev: false
 
   /punycode@2.3.0:

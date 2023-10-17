@@ -1,7 +1,16 @@
 'use client'
 
 import { Text, HStack } from '@chakra-ui/react'
-import { BookMarked, Bookmark, Home, Library, Settings } from 'lucide-react'
+import {
+  Archive,
+  Atom,
+  Bookmark,
+  Clipboard,
+  ClipboardList,
+  Home,
+  Package,
+  Settings,
+} from 'lucide-react'
 import Link from 'next/link'
 import SearchBox from './Search'
 import { useEffect } from 'react'
@@ -37,9 +46,7 @@ export default function ToolBar({
         <Link href="/books">
           <Home size={24} color="#666" cursor="pointer" />
         </Link>
-        <Link href="/reader/settings">
-          <Settings size={24} color="#666" cursor="pointer" />
-        </Link>
+        <Package size={24} color="#666" cursor="pointer" />
         <Toc
           chapters={book?.chapters}
           activeChapter={activeChapter}

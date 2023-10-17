@@ -3,7 +3,7 @@
 import { upload } from '@vercel/blob/client'
 import { Plus } from 'lucide-react'
 import { parseEpub } from '../reader/epub-parser'
-import { Book } from '@/types'
+import { Book, SubEvent } from '@/types'
 import {
   useDisclosure,
   Modal,
@@ -18,11 +18,10 @@ import {
   Img,
   Text,
   useToast,
-  Spinner,
 } from '@chakra-ui/react'
 import { useRef, useState } from 'react'
-import { sql } from '@vercel/postgres'
 import { User } from '@supabase/supabase-js'
+import * as PubSub from 'pubsub-js'
 
 interface TmpBook {
   book: Book
@@ -102,10 +101,10 @@ export default function Upload({ user }: { user: User | null }) {
         })
       )
 
-      // create a record for book table in supabase
-      // create a record for book_image table in supabase
+      PubSub.publish(SubEvent.REFRESH_BOOKS)
       onClose()
       setHandling(false)
+      setBooks([])
     } catch (error) {
       toast({
         title: 'Error',
@@ -132,40 +131,35 @@ export default function Upload({ user }: { user: User | null }) {
             Upload Books
           </ModalHeader>
           <VStack p={4} px={8}>
-            {handling ? (
-              <VStack w="100%" alignItems={'center'} mb={6}>
-                <Text>Processing the book</Text>
-              </VStack>
-            ) : (
-              <VStack w="100%" alignItems={'flex-start'} gap={4} mb={4}>
-                {books.map((b, idx) => {
-                  const cover = b.book.images.find((i) =>
-                    i.key.includes('cover')
-                  )
-                  const title = b.book.metadata?.title
-                  const author = b.book.metadata?.author
-                  const publisher = b.book.metadata?.publisher
-                  return (
-                    <HStack key={idx} alignItems={'flex-start'} gap={4}>
-                      {cover && (
-                        <Img
-                          src={cover.url}
-                          alt={title}
-                          w={20}
-                          h={24}
-                          objectFit={'cover'}
-                        />
-                      )}
-                      <VStack alignItems={'flex-start'} gap={0}>
-                        <Text fontWeight={600}>{title}</Text>
-                        <Text color="gray.300">{publisher?.join(',')}</Text>
-                        <Text color="gray.400">{author?.join(',')}</Text>
-                      </VStack>
-                    </HStack>
-                  )
-                })}
-              </VStack>
-            )}
+            <VStack w="100%" alignItems={'center'} gap={4} mb={4}>
+              {books.map((b, idx) => {
+                const cover = b.book.images.find((i) => i.key.includes('cover'))
+                const title = b.book.metadata?.title
+                const author = b.book.metadata?.author
+                const publisher = b.book.metadata?.publisher
+                return (
+                  <VStack key={idx} alignItems={'center'} gap={2}>
+                    {cover && (
+                      <Img
+                        src={cover.url}
+                        alt={title}
+                        w={32}
+                        h={40}
+                        objectFit={'cover'}
+                      />
+                    )}
+                    <Text fontWeight={600}>{title}</Text>
+                    <Text color="gray.300">{publisher?.join(',')}</Text>
+                    <Text color="gray.400">{author?.join(',')}</Text>
+                  </VStack>
+                )
+              })}
+              {handling && (
+                <VStack w="100%" alignItems={'center'} mb={6}>
+                  <Text>Processing the book</Text>
+                </VStack>
+              )}
+            </VStack>
 
             <Button
               w="100%"
