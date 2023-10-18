@@ -24,10 +24,10 @@ export async function POST(request: Request) {
     const cover = data.cover || '-'
     const file = data.file || '-'
 
-    await sql`INSERT INTO ebooks (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
+    const result =
+      await sql`INSERT INTO ebooks (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
 
-    const result = await sql`SELECT * FROM ebooks WHERE uid = ${uid} LIMIT 10;`
-    return NextResponse.json({ books: result.rows }, { status: 200 })
+    return NextResponse.json(result, { status: 200 })
   } catch (error) {
     console.log('error', error)
 

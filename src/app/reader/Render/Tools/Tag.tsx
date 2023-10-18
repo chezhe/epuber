@@ -38,7 +38,7 @@ export default function Tag() {
           <TagIcon size={24} cursor={'pointer'} />
         </Box>
       </PopoverTrigger>
-      <PopoverContent w={'auto'} borderRadius={2}>
+      <PopoverContent w={'auto'} borderRadius={2} bg="gray.600">
         <PopoverBody p={0}>
           <VStack gap={0} alignItems={'flex-start'}>
             {tags.map((t, idx) => {
@@ -51,7 +51,7 @@ export default function Tag() {
                   onClick={() => {}}
                   _hover={{ bg: 'whiteAlpha.300' }}
                 >
-                  <Text fontSize={14} isTruncated maxW={100}>
+                  <Text isTruncated maxW={160}>
                     {t.value}
                   </Text>
                 </Box>

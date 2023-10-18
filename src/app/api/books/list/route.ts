@@ -13,7 +13,7 @@ export async function GET(request: Request) {
       return NextResponse.json([], { status: 200 })
     }
     const result =
-      await sql`SELECT * FROM ebooks WHERE uid = ${user?.id} LIMIT 10;`
+      await sql`SELECT * FROM ebooks WHERE uid = ${user?.id} LIMIT 100;`
     return NextResponse.json(result.rows, { status: 200 })
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 })

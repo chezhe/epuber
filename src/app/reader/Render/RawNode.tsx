@@ -15,21 +15,23 @@ import type { DocumentFragment } from 'parse5/dist/tree-adapters/default.d.ts'
 import { useContext } from 'react'
 
 function ImageNode({ node }: { node?: DocumentFragment.ChildNode }) {
+  console.log('node', node)
+
   const book = useContext(BookContext)
   const src = node.attrs.find((attr: any) => attr.name === 'src')?.value
   const alt = node.attrs.find((attr: any) => attr.name === 'alt')?.value
-  const img = book?.images?.find((i) => src?.includes(i.key))
+  const img = book?.images?.find((i) => i.key?.includes(src))
   return <Img src={img?.url} alt={alt} m="0 auto" my={6} />
 }
 
 function LinkNode({ node }: { node?: DocumentFragment.ChildNode }) {
   const href = node.attrs.find((attr: any) => attr.name === 'href')?.value
-  const body = useContext(BodyContext)
-  if (href?.includes('#')) {
-    const id = href.split('#')[1]
-    const target = findAnchorTarget(body, id)
-    console.log('target', id, target)
-  }
+  // const body = useContext(BodyContext)
+  // if (href?.includes('#')) {
+  //   const id = href.split('#')[1]
+  //   const target = findAnchorTarget(body, id)
+  //   console.log('target', id, target)
+  // }
 
   return (
     <Text color="blue.400" display={'inline'} title={href} cursor={'pointer'}>

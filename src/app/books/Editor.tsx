@@ -46,23 +46,17 @@ export default function Editor({
                 flex={1}
                 objectFit={'cover'}
                 boxShadow="md"
-                _groupHover={{
-                  boxShadow: 'outline',
-                }}
               />
             ) : (
               <Center
                 w={300}
                 h={400}
+                px={6}
                 flex={1}
                 bg="red.300"
                 color="white"
-                _groupHover={{
-                  boxShadow: 'outline',
-                  transform: 'translateY(-5px)',
-                }}
               >
-                <Text fontSize={32} fontWeight={600}>
+                <Text fontSize={28} fontWeight={600} textAlign={'center'}>
                   {ibook?.title}
                 </Text>
               </Center>

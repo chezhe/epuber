@@ -42,7 +42,7 @@ export default function Highlight() {
           <Highlighter size={24} cursor={'pointer'} />
         </Box>
       </PopoverTrigger>
-      <PopoverContent w={'auto'} borderRadius={2}>
+      <PopoverContent w={'auto'} borderRadius={2} bg="gray.600">
         <PopoverBody p={0}>
           <VStack gap={2} py={2} w={12} alignItems={'center'}>
             {styles.map((s, idx) => {
