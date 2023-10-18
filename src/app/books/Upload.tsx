@@ -14,7 +14,6 @@ import {
   VStack,
   Button,
   Input,
-  HStack,
   Img,
   Text,
   useToast,
@@ -60,7 +59,6 @@ export default function Upload({ user }: { user: User | null }) {
       )
       const validBooks = books.filter(Boolean) as TmpBook[]
       setBooks(validBooks)
-      console.log('validBooks', validBooks)
 
       await Promise.all(
         validBooks.map(async ({ file, book }) => {
@@ -69,7 +67,6 @@ export default function Upload({ user }: { user: User | null }) {
             let coverUrl = ''
             if (cover) {
               const coverFile = await fetch(cover.url).then((res) => res.blob())
-              console.log('coverFile', cover.url, coverFile)
 
               const coverBlob = await upload(cover.key, coverFile, {
                 access: 'public',
@@ -115,7 +112,7 @@ export default function Upload({ user }: { user: User | null }) {
   }
   return (
     <>
-      <Plus size={24} color="gray" cursor={'pointer'} onClick={onOpen} />
+      <Plus size={24} color="white" cursor={'pointer'} onClick={onOpen} />
       <Modal
         isOpen={isOpen}
         isCentered

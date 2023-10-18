@@ -16,9 +16,9 @@ import { SearchIcon } from '@chakra-ui/icons'
 import { useEffect, useMemo, useState } from 'react'
 import { Book, Chapter } from '@/types'
 import TurndownService from 'turndown'
-import _, { set } from 'lodash'
+import _ from 'lodash'
 import { findChapter } from '@/utils/book'
-import { useSearchParams } from 'next/navigation'
+import useDark from '@/hooks/useDark'
 
 const turndownService = new TurndownService({
   headingStyle: 'atx',
@@ -37,6 +37,7 @@ export default function SearchBox({
 }) {
   const { isOpen, onClose, onOpen } = useDisclosure({ defaultIsOpen: false })
   const [keyword, setKeyword] = useState('')
+  const dark = useDark()
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -121,7 +122,7 @@ export default function SearchBox({
               borderColor="transparent"
               width="100%"
               _focus={{ border: '0px' }}
-              color="blackAlpha.800"
+              color={dark ? 'whiteAlpha.800' : 'blackAlpha.800'}
               fontSize={24}
               value={keyword}
               onChange={onChange}
@@ -136,7 +137,7 @@ export default function SearchBox({
                   return (
                     <Box
                       key={idx}
-                      color="gray.600"
+                      color={dark ? 'whiteAlpha.600' : 'gray.600'}
                       cursor={'pointer'}
                       w="100%"
                       px={4}

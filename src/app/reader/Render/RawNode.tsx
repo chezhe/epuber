@@ -1,4 +1,5 @@
-import { BookContext } from '@/hooks/BookContext'
+import { BodyContext, BookContext } from '@/hooks/BookContext'
+import { findAnchorTarget } from '@/utils/book'
 import {
   ListItem,
   OrderedList,
@@ -23,6 +24,13 @@ function ImageNode({ node }: { node?: DocumentFragment.ChildNode }) {
 
 function LinkNode({ node }: { node?: DocumentFragment.ChildNode }) {
   const href = node.attrs.find((attr: any) => attr.name === 'href')?.value
+  const body = useContext(BodyContext)
+  if (href?.includes('#')) {
+    const id = href.split('#')[1]
+    const target = findAnchorTarget(body, id)
+    console.log('target', id, target)
+  }
+
   return (
     <Text color="blue.400" display={'inline'} title={href} cursor={'pointer'}>
       {node.value}

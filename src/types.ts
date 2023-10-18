@@ -24,7 +24,7 @@ export interface Book {
 export interface SQLBook {
   id: number
   title: string
-  author: string[]
+  author?: string[]
   publisher?: string[]
   language?: string[]
   file: string
