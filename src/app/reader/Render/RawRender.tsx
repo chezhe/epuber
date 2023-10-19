@@ -34,8 +34,7 @@ export default function RawRender({
   const bodyHtml = /<body.*?>([\s\S]*)<\/body>/.exec(
     activeChapter?.content ?? ''
   )?.[1]
-  const body = parseFragment(bodyHtml ?? '') //parseFragment(sanitizeHtml(bodyHtml ?? ''))
-  console.log('parsed', body)
+  const body = parseFragment(sanitizeHtml(bodyHtml ?? ''))
 
   const { scrollYProgress } = useScroll({
     container: scrollRef,

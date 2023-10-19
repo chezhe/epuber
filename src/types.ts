@@ -31,8 +31,14 @@ export interface SQLBook {
   cover: string
   description?: string
   rights?: string
+  progress: number
 }
 
 export enum SubEvent {
   REFRESH_BOOKS = 'REFRESH_BOOKS',
+}
+
+export interface ActiveNav {
+  category: string
+  active: string
 }

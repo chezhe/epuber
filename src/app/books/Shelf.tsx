@@ -22,6 +22,7 @@ import { useState } from 'react'
 import { SQLBook } from '@/types'
 import Editor from './Editor'
 import useBooks from '@/hooks/useBooks'
+import useNav from '@/hooks/useNav'
 
 const ChakraMoreHorizontal = chakra(MoreHorizontal)
 
@@ -31,6 +32,29 @@ export default function Shelf({ user }: { user: User | null }) {
 
   const dark = useDark()
   const books = useBooks()
+  const { nav } = useNav()
+
+  const _books = books
+    .filter((book) => {
+      if (keyword.trim()) {
+        return book.title.toLowerCase().includes(keyword.toLowerCase())
+      }
+      return true
+    })
+    .filter((book) => {
+      if (nav?.category === 'Library') {
+        if (nav.active === 'All') {
+          return true
+        }
+        if (nav.active === 'Reading') {
+          return book.progress > 0 && book.progress < 100
+        }
+        if (nav.active === 'Finished') {
+          return book.progress === 100
+        }
+      }
+      return true
+    })
 
   return (
     <VStack
@@ -132,88 +156,81 @@ export default function Shelf({ user }: { user: User | null }) {
           flexFlow={'row wrap'}
           alignItems={'flex-start'}
         >
-          {books
-            .filter((book) => {
-              if (keyword.trim()) {
-                return book.title.toLowerCase().includes(keyword.toLowerCase())
-              }
-              return true
-            })
-            .map((book) => (
-              <Link key={book.id} href={`/reader?book=${book.title}`}>
-                <VStack
-                  minW={200}
-                  cursor={'pointer'}
-                  role="group"
-                  _groupHover={{}}
-                >
-                  {book.cover.startsWith('https') ? (
-                    <Img
-                      src={book.cover}
-                      w={200}
-                      h={260}
-                      objectFit={'cover'}
-                      boxShadow="md"
-                      filter="auto"
-                      brightness="85%"
-                      _groupHover={{
-                        boxShadow: '2xl',
-                        transform: 'translateY(-5px) scale(1.02)',
-                        brightness: '100%',
-                      }}
-                    />
-                  ) : (
-                    <Center
-                      w={200}
-                      h={260}
-                      px={6}
-                      bg="red.300"
-                      color="white"
-                      boxShadow="md"
-                      filter="auto"
-                      brightness="90%"
-                      _groupHover={{
-                        boxShadow: '2xl',
-                        transform: 'translateY(-5px) scale(1.02)',
-                        brightness: '100%',
-                      }}
-                    >
-                      <Text fontSize={24} fontWeight={600} textAlign={'center'}>
-                        {book.title}
-                      </Text>
-                    </Center>
-                  )}
-                  <HStack
-                    w="100%"
-                    justifyContent={'space-between'}
-                    onClick={(e) => e.preventDefault()}
+          {_books.map((book) => (
+            <Link key={book.id} href={`/reader?book=${book.title}`}>
+              <VStack
+                minW={200}
+                cursor={'pointer'}
+                role="group"
+                _groupHover={{}}
+              >
+                {book.cover.startsWith('https') ? (
+                  <Img
+                    src={book.cover}
+                    w={200}
+                    h={280}
+                    objectFit={'cover'}
+                    boxShadow="md"
+                    filter="auto"
+                    brightness="85%"
+                    _groupHover={{
+                      boxShadow: '2xl',
+                      transform: 'translateY(-5px) scale(1.02)',
+                      brightness: '100%',
+                    }}
+                  />
+                ) : (
+                  <Center
+                    w={200}
+                    h={280}
+                    px={6}
+                    bg="red.300"
+                    color="white"
+                    boxShadow="md"
+                    filter="auto"
+                    brightness="90%"
+                    _groupHover={{
+                      boxShadow: '2xl',
+                      transform: 'translateY(-5px) scale(1.02)',
+                      brightness: '100%',
+                    }}
                   >
-                    <Text
-                      isTruncated
-                      maxW={140}
-                      color={'whiteAlpha.800'}
-                      _groupHover={{
-                        fontWeight: 600,
-                        transform: 'translateY(-5px)',
-                      }}
-                    >
+                    <Text fontSize={24} fontWeight={600} textAlign={'center'}>
                       {book.title}
                     </Text>
-                    <ChakraMoreHorizontal
-                      size={24}
-                      color={'whiteAlpha.700'}
-                      onClick={() => setManaging(book)}
-                      strokeWidth={1}
-                      _groupHover={{
-                        transform: 'translateY(-5px)',
-                        strokeWidth: 3,
-                        color: 'whiteAlpha.900',
-                      }}
-                    />
-                  </HStack>
-                </VStack>
-              </Link>
-            ))}
+                  </Center>
+                )}
+                <HStack
+                  w="100%"
+                  justifyContent={'space-between'}
+                  onClick={(e) => e.preventDefault()}
+                >
+                  <Text
+                    isTruncated
+                    maxW={140}
+                    color={'whiteAlpha.800'}
+                    _groupHover={{
+                      fontWeight: 600,
+                      transform: 'translateY(-5px)',
+                    }}
+                  >
+                    {book.title}
+                  </Text>
+                  <ChakraMoreHorizontal
+                    size={24}
+                    color={'whiteAlpha.700'}
+                    onClick={() => setManaging(book)}
+                    strokeWidth={1}
+                    _groupHover={{
+                      transform: 'translateY(-5px)',
+                      strokeWidth: 3,
+                      color: 'whiteAlpha.900',
+                    }}
+                  />
+                </HStack>
+              </VStack>
+            </Link>
+          ))}
           <Editor book={managing} onClose={() => setManaging(undefined)} />
         </Flex>
       </VStack>

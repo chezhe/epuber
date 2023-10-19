@@ -1,6 +1,7 @@
 'use client'
 
 import useDark from '@/hooks/useDark'
+import useNav from '@/hooks/useNav'
 import { HStack, Img, VStack, Text, useColorMode } from '@chakra-ui/react'
 import {
   BookOpen,
@@ -45,8 +46,8 @@ const inspiration = [
 ]
 
 export default function SideBar() {
-  const [active, setActive] = useState(library[0])
   const dark = useDark()
+  const { nav, setNav } = useNav()
 
   return (
     <VStack
@@ -69,8 +70,10 @@ export default function SideBar() {
             <NavItem
               key={item.title}
               {...item}
-              isActive={item.title === active.title}
-              onClick={setActive}
+              isActive={item.title === nav?.active}
+              onClick={(param) =>
+                setNav({ category: 'Library', active: param.title })
+              }
             />
           ))}
         </VStack>
@@ -83,8 +86,10 @@ export default function SideBar() {
             <NavItem
               key={item.title}
               {...item}
-              isActive={item.title === active.title}
-              onClick={setActive}
+              isActive={item.title === nav?.active}
+              onClick={(param) =>
+                setNav({ category: 'Inspiration', active: param.title })
+              }
             />
           ))}
         </VStack>
@@ -102,8 +107,10 @@ export default function SideBar() {
         <NavItem
           title="Settings"
           icon={<Settings />}
-          isActive={'Settings' === active.title}
-          onClick={setActive}
+          isActive={'Settings' === nav?.active}
+          onClick={(param) =>
+            setNav({ category: 'Settings', active: param.title })
+          }
         />
       </VStack>
     </VStack>

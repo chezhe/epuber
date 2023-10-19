@@ -106,7 +106,7 @@ export default function Editor({
               <Img
                 src={ibook?.cover}
                 w={300}
-                h={400}
+                h={420}
                 flex={1}
                 objectFit={'cover'}
                 boxShadow="md"
@@ -114,7 +114,7 @@ export default function Editor({
             ) : (
               <Center
                 w={300}
-                h={400}
+                h={420}
                 px={6}
                 flex={1}
                 bg="red.300"
