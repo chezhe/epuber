@@ -25,7 +25,7 @@ export async function POST(request: Request) {
     const file = data.file || '-'
 
     const result =
-      await sql`INSERT INTO ebooks (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
+      await sql`INSERT INTO ibooks (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {

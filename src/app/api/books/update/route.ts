@@ -4,9 +4,9 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
 import { cookies } from 'next/headers'
 
 export async function POST(request: Request) {
-  const data = await request.json()
-
   try {
+    const data = await request.json()
+
     const supabase = createRouteHandlerClient({ cookies })
     const {
       data: { user },
@@ -17,20 +17,15 @@ export async function POST(request: Request) {
     const uid = user.id
     const author = JSON.stringify(data.author) || '[]'
     const publisher = JSON.stringify(data.publisher) || '[]'
-    const language = JSON.stringify(data.language) || '[]'
     const title = data.title || '-'
-    const rights = data.rights || '-'
     const description = data.description || '-'
     const cover = data.cover || '-'
-    const file = data.file || '-'
 
-    await sql`INSERT INTO ebooks (uid, title, author, file, cover, publisher, language, description, rights, deleted) VALUES (${uid}, ${title}, ${author}, ${file}, ${cover}, ${publisher}, ${language}, ${description}, ${rights}, FALSE);`
+    const result =
+      await sql`UPDATE ibooks SET title = ${title}, author = ${author}, publisher = ${publisher}, description = ${description}, cover = ${cover} WHERE uid = ${uid} AND id = ${data.id};`
 
-    const result = await sql`SELECT * FROM ebooks WHERE uid = ${uid} LIMIT 10;`
-    return NextResponse.json({ books: result.rows }, { status: 200 })
+    return NextResponse.json(result, { status: 200 })
   } catch (error) {
-    console.log('error', error)
-
     return NextResponse.json({ error }, { status: 500 })
   }
 }

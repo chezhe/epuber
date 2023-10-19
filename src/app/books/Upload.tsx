@@ -102,6 +102,7 @@ export default function Upload({ user }: { user: User | null }) {
       onClose()
       setHandling(false)
       setBooks([])
+      // inputRef.current?.value = ''
     } catch (error) {
       toast({
         title: 'Error',
@@ -113,75 +114,79 @@ export default function Upload({ user }: { user: User | null }) {
   return (
     <>
       <Plus size={24} color="white" cursor={'pointer'} onClick={onOpen} />
-      <Modal
-        isOpen={isOpen}
-        isCentered
-        onClose={() => {
-          setBooks([])
-          onClose()
-        }}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalCloseButton />
-          <ModalHeader fontSize={28} textAlign={'center'}>
-            Upload Books
-          </ModalHeader>
-          <VStack p={4} px={8}>
-            <VStack w="100%" alignItems={'center'} gap={4} mb={4}>
-              {books.map((b, idx) => {
-                const cover = b.book.images.find((i) => i.key.includes('cover'))
-                const title = b.book.metadata?.title
-                const author = b.book.metadata?.author
-                const publisher = b.book.metadata?.publisher
-                return (
-                  <VStack key={idx} alignItems={'center'} gap={2}>
-                    {cover && (
-                      <Img
-                        src={cover.url}
-                        alt={title}
-                        w={32}
-                        h={40}
-                        objectFit={'cover'}
-                      />
-                    )}
-                    <Text fontWeight={600}>{title}</Text>
-                    <Text color="gray.300">{publisher?.join(',')}</Text>
-                    <Text color="gray.400">{author?.join(',')}</Text>
+      {isOpen && (
+        <Modal
+          isOpen
+          isCentered
+          onClose={() => {
+            setBooks([])
+            onClose()
+          }}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalCloseButton />
+            <ModalHeader fontSize={28} textAlign={'center'}>
+              Upload Books
+            </ModalHeader>
+            <VStack p={4} px={8}>
+              <VStack w="100%" alignItems={'center'} gap={4} mb={4}>
+                {books.map((b, idx) => {
+                  const cover = b.book.images.find((i) =>
+                    i.key.includes('cover')
+                  )
+                  const title = b.book.metadata?.title
+                  const author = b.book.metadata?.author
+                  const publisher = b.book.metadata?.publisher
+                  return (
+                    <VStack key={idx} alignItems={'center'} gap={2}>
+                      {cover && (
+                        <Img
+                          src={cover.url}
+                          alt={title}
+                          w={32}
+                          h={40}
+                          objectFit={'cover'}
+                        />
+                      )}
+                      <Text fontWeight={600}>{title}</Text>
+                      <Text color="gray.300">{publisher?.join(',')}</Text>
+                      <Text color="gray.400">{author?.join(',')}</Text>
+                    </VStack>
+                  )
+                })}
+                {handling && (
+                  <VStack w="100%" alignItems={'center'} mb={6}>
+                    <Text>Processing the book</Text>
                   </VStack>
-                )
-              })}
-              {handling && (
-                <VStack w="100%" alignItems={'center'} mb={6}>
-                  <Text>Processing the book</Text>
-                </VStack>
-              )}
-            </VStack>
+                )}
+              </VStack>
 
-            <Button
-              w="100%"
-              bg="red.300"
-              onClick={() => {
-                ;(inputRef.current as any)?.click()
-              }}
-              isLoading={handling}
-            >
-              {books.length > 0 ? 'Confirm' : 'Add Books'}
-            </Button>
-            <Input
-              ref={inputRef}
-              type="file"
-              onChange={uploadFile}
-              multiple={false}
-              borderRadius={2}
-              accept=".epub"
-              display={'inline'}
-              visibility={'hidden'}
-              h={0}
-            />
-          </VStack>
-        </ModalContent>
-      </Modal>
+              <Button
+                w="100%"
+                bg="red.300"
+                onClick={() => {
+                  ;(inputRef.current as any)?.click()
+                }}
+                isLoading={handling}
+              >
+                {books.length > 0 ? 'Confirm' : 'Add Books'}
+              </Button>
+              <Input
+                ref={inputRef}
+                type="file"
+                onChange={uploadFile}
+                multiple={false}
+                borderRadius={2}
+                accept=".epub"
+                display={'inline'}
+                visibility={'hidden'}
+                h={0}
+              />
+            </VStack>
+          </ModalContent>
+        </Modal>
+      )}
     </>
   )
 }

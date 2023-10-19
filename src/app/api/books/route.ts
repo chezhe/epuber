@@ -5,7 +5,7 @@ export async function GET(request: Request) {
   try {
     // const result = await sql`DROP TABLE IF EXISTS books;`
     const result = await sql`
-    CREATE TABLE ebooks (
+    CREATE TABLE ibooks (
       id SERIAL PRIMARY KEY,
       uid VARCHAR(255) NOT NULL,
       title VARCHAR(255) NOT NULL,
@@ -19,7 +19,9 @@ export async function GET(request: Request) {
       deleted BOOLEAN DEFAULT FALSE,
       created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-      progress INTEGER DEFAULT 0
+      progress SMALLINT DEFAULT 0,
+      finished BOOLEAN DEFAULT FALSE,
+      last_read VARCHAR(255)
     );`
     return NextResponse.json({ result }, { status: 200 })
   } catch (error) {

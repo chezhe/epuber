@@ -140,7 +140,7 @@ export default function Shelf({ user }: { user: User | null }) {
               return true
             })
             .map((book) => (
-              <Link key={book.title} href={`/reader?book=${book.title}`}>
+              <Link key={book.id} href={`/reader?book=${book.title}`}>
                 <VStack
                   minW={200}
                   cursor={'pointer'}

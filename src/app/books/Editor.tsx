@@ -13,10 +13,12 @@ import {
   Center,
   Circle,
   Input,
+  useToast,
 } from '@chakra-ui/react'
-import { SQLBook } from '@/types'
+import { SQLBook, SubEvent } from '@/types'
 import { CheckCircle, PenLine, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import * as PubSub from 'pubsub-js'
 
 export default function Editor({
   book,
@@ -27,10 +29,72 @@ export default function Editor({
 }) {
   const [ibook, setIBook] = useState<SQLBook | undefined>(book)
   const [editing, setEditing] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [updating, setUpdating] = useState(false)
 
   useEffect(() => {
     setIBook(book)
   }, [book])
+
+  const toast = useToast()
+  const onDelete = async () => {
+    try {
+      setDeleting(true)
+      if (!ibook) {
+        throw new Error('No book selected')
+      }
+
+      const res = await fetch(`/api/books/delete`, {
+        method: 'POST',
+        body: JSON.stringify({ id: ibook.id }),
+      })
+      console.log('res', res)
+      PubSub.publish(SubEvent.REFRESH_BOOKS)
+      setDeleting(false)
+      onClose()
+      toast({
+        title: 'Success',
+        description: 'Book deleted',
+        status: 'success',
+      })
+    } catch (error) {
+      setDeleting(false)
+      toast({
+        title: 'Error',
+        description: (error as Error).message,
+        status: 'error',
+      })
+    }
+  }
+
+  const onUpdate = async () => {
+    try {
+      setEditing(false)
+      setUpdating(true)
+      if (!ibook) {
+        throw new Error('No book selected')
+      }
+      await fetch(`/api/books/update`, {
+        method: 'POST',
+        body: JSON.stringify(ibook),
+      })
+      PubSub.publish(SubEvent.REFRESH_BOOKS)
+      setUpdating(false)
+      onClose()
+      toast({
+        title: 'Success',
+        description: 'Book updated',
+        status: 'success',
+      })
+    } catch (error) {
+      setUpdating(false)
+      toast({
+        title: 'Error',
+        description: (error as Error).message,
+        status: 'error',
+      })
+    }
+  }
 
   return (
     <Modal isOpen={!!book} isCentered size="2xl" onClose={onClose}>
@@ -140,8 +204,10 @@ export default function Editor({
                   borderRadius={2}
                   _hover={{ bg: 'gray.500' }}
                   size="sm"
-                  onClick={() => {}}
+                  onClick={onDelete}
                   color="white"
+                  disabled={deleting || updating}
+                  isLoading={deleting}
                 >
                   Delete
                 </Button>
@@ -157,8 +223,16 @@ export default function Editor({
                   borderRadius={2}
                   _hover={{ bg: 'red.500' }}
                   size="sm"
-                  onClick={() => setEditing(!editing)}
+                  onClick={() => {
+                    if (editing) {
+                      onUpdate()
+                    } else {
+                      setEditing(!editing)
+                    }
+                  }}
                   color="white"
+                  disabled={deleting || updating}
+                  isLoading={updating}
                 >
                   {editing ? 'Save' : 'Edit'}
                 </Button>
@@ -172,7 +246,12 @@ export default function Editor({
             bg="red.300"
             p={2}
             cursor={'pointer'}
-            onClick={onClose}
+            opacity={deleting || updating ? 0.8 : 1}
+            onClick={() => {
+              if (!deleting && !updating) {
+                onClose()
+              }
+            }}
             boxShadow={'lg'}
             _hover={{ bg: 'red.500' }}
           >
