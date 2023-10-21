@@ -145,7 +145,7 @@ export default function Upload({ user }: { user: User | null }) {
                           src={cover.url}
                           alt={title}
                           w={32}
-                          h={45}
+                          h={44}
                           objectFit={'cover'}
                         />
                       )}

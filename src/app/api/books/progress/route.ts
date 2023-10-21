@@ -15,14 +15,10 @@ export async function POST(request: Request) {
       throw new Error('Not authorized')
     }
     const uid = user.id
-    const author = JSON.stringify(data.author) || '[]'
-    const publisher = JSON.stringify(data.publisher) || '[]'
-    const title = data.title || '-'
-    const description = data.description || '-'
-    const cover = data.cover || '-'
+    const progress = data.progress || 0
 
     const result =
-      await sql`UPDATE ibooks SET title = ${title}, author = ${author}, publisher = ${publisher}, description = ${description}, cover = ${cover}, updated_at = NOW() WHERE uid = ${uid} AND id = ${data.id};`
+      await sql`UPDATE ibooks SET progress = ${progress}, updated_at = NOW() WHERE uid = ${uid} AND id = ${data.id};`
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {

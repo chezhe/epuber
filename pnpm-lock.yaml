@@ -47,6 +47,9 @@ dependencies:
   '@vercel/postgres':
     specifier: ^0.5.0
     version: 0.5.0
+  dayjs:
+    specifier: ^1.11.10
+    version: 1.11.10
   epub:
     specifier: ^1.2.1
     version: 1.2.1
@@ -3869,6 +3872,10 @@ packages:
       abab: 2.0.6
       whatwg-mimetype: 3.0.0
       whatwg-url: 11.0.0
+    dev: false
+
+  /dayjs@1.11.10:
+    resolution: {integrity: sha512-vjAczensTgRcqDERK0SR2XMwsF/tSvnvlv6VcF2GIhg6Sx4yOIt/irsr1RDJsKiIyBzJDpCoXiWWq28MqH2cnQ==}
     dev: false
 
   /debug@2.6.9:

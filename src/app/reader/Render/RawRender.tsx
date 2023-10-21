@@ -1,7 +1,7 @@
 import { Book, Chapter } from '@/types'
 import { Box } from '@chakra-ui/react'
 import RawNode from './RawNode'
-import { parseFragment, parse } from 'parse5'
+import { parseFragment } from 'parse5'
 import { useEffect, useRef } from 'react'
 import { motion, useScroll } from 'framer-motion'
 import sanitizeHtml from 'sanitize-html'

@@ -4,11 +4,13 @@ import { Spinner, Text, VStack } from '@chakra-ui/react'
 import ToolBar from './ToolBar'
 import { parseEpub } from './epub-parser'
 import { useEffect, useState } from 'react'
-import { Book, Chapter } from '@/types'
+import { Book, Chapter, SubEvent } from '@/types'
 import RawRender from './Render/RawRender'
 import { useSearchParams } from 'next/navigation'
 import { BookContext } from '@/hooks/BookContext'
 import useBooks from '@/hooks/useBooks'
+import FastRender from './Render/FastRender'
+import * as PubSub from 'pubsub-js'
 
 export default function Reader() {
   const books = useBooks()
@@ -24,6 +26,7 @@ export default function Reader() {
 
     if (bookName) {
       const bk = books.find((b) => b.title === bookName)
+
       if (bk) {
         fetch(bk.file)
           .then((res) => res.blob())
@@ -32,12 +35,24 @@ export default function Reader() {
             parseEpub(file).then((book) => {
               setBook(book as Book)
               setActiveChapter(book.chapters[0])
+              console.log('book parsed', book.chapters[0])
             })
           })
           .catch(console.error)
+
+        if (bk.progress === 0) {
+          fetch('/api/books/progress', {
+            method: 'POST',
+            body: JSON.stringify({
+              progress: 1,
+              id: bk.id,
+            }),
+          })
+          PubSub.publish(SubEvent.REFRESH_BOOKS)
+        }
       }
     }
-  }, [bookName])
+  }, [bookName, books.length])
 
   return (
     <BookContext.Provider value={book}>
@@ -48,7 +63,7 @@ export default function Reader() {
           setActiveChapter={setActiveChapter}
         />
         {activeChapter ? (
-          <RawRender
+          <FastRender
             activeChapter={activeChapter}
             setActiveChapter={setActiveChapter}
             book={book}

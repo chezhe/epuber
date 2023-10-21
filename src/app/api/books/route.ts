@@ -21,7 +21,9 @@ export async function GET(request: Request) {
       updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
       progress SMALLINT DEFAULT 0,
       finished BOOLEAN DEFAULT FALSE,
-      last_read VARCHAR(255)
+      last_read VARCHAR(255),
+      last_read_progress SMALLINT DEFAULT 0,
+      tags VARCHAR(255) DEFAULT '[]'
     );`
     return NextResponse.json({ result }, { status: 200 })
   } catch (error) {
