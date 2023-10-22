@@ -12,15 +12,16 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { XStack } from 'tamagui'
 
 function App() {
   return (
     <ScrollContainer scrollAxis="y" height="100vh" scrollSnapType="y mandatory">
-      <HStack px={16} py={6}>
+      <XStack px={'$6'} py={'$3'}>
         <Link href="/">
           <Img src="/logo.png" w={40} />
         </Link>
-      </HStack>
+      </XStack>
       <ScrollSection>
         <Center>
           <VStack>
