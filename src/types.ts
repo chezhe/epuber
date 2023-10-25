@@ -34,8 +34,15 @@ export interface SQLBook {
   progress: number
 }
 
+export interface SQLCollection {
+  title: string
+  description?: string
+  books?: SQLBook[]
+}
+
 export enum SubEvent {
   REFRESH_BOOKS = 'REFRESH_BOOKS',
+  REFRESH_COLLECTIONS = 'REFRESH_COLLECTIONS',
 }
 
 export interface ActiveNav {

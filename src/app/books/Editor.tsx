@@ -14,9 +14,19 @@ import {
   Circle,
   Input,
   useToast,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+  PopoverHeader,
+  PopoverBody,
+  PopoverFooter,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverAnchor,
+  Portal,
 } from '@chakra-ui/react'
 import { SQLBook, SubEvent } from '@/types'
-import { CheckCircle, PenLine, Trash2, X } from 'lucide-react'
+import { CheckCircle, FolderInput, PenLine, Trash2, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import * as PubSub from 'pubsub-js'
 
@@ -44,11 +54,10 @@ export default function Editor({
         throw new Error('No book selected')
       }
 
-      const res = await fetch(`/api/books/delete`, {
+      await fetch(`/api/books/delete`, {
         method: 'POST',
         body: JSON.stringify({ id: ibook.id }),
       })
-      console.log('res', res)
       PubSub.publish(SubEvent.REFRESH_BOOKS)
       setDeleting(false)
       onClose()
@@ -260,5 +269,34 @@ export default function Editor({
         </HStack>
       </ModalContent>
     </Modal>
+  )
+}
+
+function Add2Collection() {
+  return (
+    <Popover>
+      <PopoverTrigger>
+        <Button
+          size="sm"
+          leftIcon={<FolderInput size={20} color="white" />}
+          borderRadius={2}
+          bg="green.300"
+          _hover={{ bg: 'green.500' }}
+        >
+          Collect
+        </Button>
+      </PopoverTrigger>
+      <Portal>
+        <PopoverContent>
+          <PopoverArrow />
+          <PopoverHeader>Header</PopoverHeader>
+          <PopoverCloseButton />
+          <PopoverBody>
+            <Button colorScheme="blue">Button</Button>
+          </PopoverBody>
+          <PopoverFooter>This is the footer</PopoverFooter>
+        </PopoverContent>
+      </Portal>
+    </Popover>
   )
 }

@@ -2,18 +2,42 @@
 
 import useDark from '@/hooks/useDark'
 import useNav from '@/hooks/useNav'
-import { HStack, Img, VStack, Text, useColorMode } from '@chakra-ui/react'
+import { SubEvent } from '@/types'
+import {
+  HStack,
+  Img,
+  VStack,
+  Text,
+  useColorMode,
+  useDisclosure,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalCloseButton,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Input,
+  Textarea,
+  useToast,
+} from '@chakra-ui/react'
 import {
   BookOpen,
   CheckCircle,
+  Folder,
+  FolderOpen,
   Highlighter,
   Library,
   Plus,
+  PlusCircle,
   Settings,
   StickyNote,
   Tags,
 } from 'lucide-react'
 import React, { useState } from 'react'
+import * as PubSub from 'pubsub-js'
+import useCollections from '@/hooks/useCollections'
 
 const library = [
   {
@@ -48,6 +72,9 @@ const inspiration = [
 export default function SideBar() {
   const dark = useDark()
   const { nav, setNav } = useNav()
+  const collections = useCollections()
+  const bg = dark ? 'blackAlpha.400' : 'blackAlpha.100'
+  console.log('collections', collections)
 
   return (
     <VStack
@@ -99,8 +126,25 @@ export default function SideBar() {
             <Text fontWeight={700} fontSize={14}>
               Collections
             </Text>
-            <Plus size={18} cursor={'pointer'} />
+            <AddCollection />
           </HStack>
+          {collections.map((c, idx) => {
+            const isActive =
+              c.title === nav?.active && nav?.category === 'Collections'
+            return (
+              <NavItem
+                key={idx}
+                title={c.title}
+                icon={
+                  isActive ? <FolderOpen size={18} /> : <Folder size={18} />
+                }
+                isActive={isActive}
+                onClick={(param) =>
+                  setNav({ category: 'Collections', active: param.title })
+                }
+              />
+            )
+          })}
         </VStack>
       </VStack>
       <VStack w="100%">
@@ -146,5 +190,83 @@ function NavItem({
       {icon}
       <Text>{title}</Text>
     </HStack>
+  )
+}
+
+function AddCollection() {
+  const { isOpen, onClose, onOpen } = useDisclosure()
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [handling, setHandling] = useState(false)
+  const toast = useToast()
+
+  const _onClose = () => {
+    if (!handling) {
+      onClose()
+    }
+  }
+  const onSubmit = async () => {
+    try {
+      setHandling(true)
+      if (!title.trim()) {
+        throw new Error('Title is required')
+      }
+      await fetch('/api/collections/create', {
+        method: 'POST',
+        body: JSON.stringify({ title, description }),
+      })
+      PubSub.publish(SubEvent.REFRESH_COLLECTIONS)
+      setHandling(false)
+      setTitle('')
+      setDescription('')
+      onClose()
+    } catch (error) {
+      setHandling(false)
+      toast({
+        title: 'Error',
+        description: (error as Error).message,
+        status: 'error',
+      })
+    }
+  }
+  return (
+    <>
+      <PlusCircle size={18} cursor={'pointer'} onClick={onOpen} />
+      <Modal isCentered isOpen={isOpen} onClose={_onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Add Collection</ModalHeader>
+          <ModalCloseButton disabled={handling} onClick={_onClose} />
+          <ModalBody>
+            <VStack gap={4}>
+              <Input
+                placeholder="Collection Name"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+              <Textarea
+                placeholder="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </VStack>
+          </ModalBody>
+
+          <ModalFooter>
+            <Button
+              variant="ghost"
+              mr={3}
+              onClick={_onClose}
+              disabled={handling}
+            >
+              Cancel
+            </Button>
+            <Button colorScheme="blue" onClick={onSubmit} isLoading={handling}>
+              Confirm
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+    </>
   )
 }
