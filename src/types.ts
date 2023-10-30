@@ -35,6 +35,7 @@ export interface SQLBook {
 }
 
 export interface SQLCollection {
+  id: number
   title: string
   description?: string
   books?: SQLBook[]

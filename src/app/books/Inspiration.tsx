@@ -3,13 +3,11 @@
 import useDark from '@/hooks/useDark'
 import { VStack, HStack, chakra, Heading } from '@chakra-ui/react'
 import { User } from '@supabase/supabase-js'
-import useBooks from '@/hooks/useBooks'
 import useNav from '@/hooks/useNav'
 import { Plus } from 'lucide-react'
 
-export default function Collection({ user }: { user: User | null }) {
+export default function Inspiration({ user }: { user: User | null }) {
   const dark = useDark()
-  const books = useBooks()
   const { nav } = useNav()
 
   return (
@@ -44,7 +42,7 @@ export default function Collection({ user }: { user: User | null }) {
           zIndex={10}
         >
           <Heading color="whiteAlpha.800">{nav?.active}</Heading>
-          <Plus size={24} color="white" cursor={'pointer'} />
+          {/* <Plus size={24} color="white" cursor={'pointer'} /> */}
         </HStack>
       </VStack>
     </VStack>
