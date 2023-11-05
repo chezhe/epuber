@@ -16,10 +16,13 @@ export async function POST(request: Request) {
     // check if uid OWNs collection_id
     const uid = user.id
     const book_id = data.book_id
-    const collection_id = data.collection_id
+    const collection_ids = data.collection_ids
 
-    const result =
-      await sql`INSERT INTO icollection (book_id, collection_id) VALUES (${book_id}, ${collection_id});`
+    const result = await Promise.all(
+      collection_ids.map(async (collection_id: number) => {
+        return await sql`INSERT INTO icollection (book_id, collection_id) VALUES (${book_id}, ${collection_id});`
+      })
+    )
 
     return NextResponse.json(result, { status: 200 })
   } catch (error) {

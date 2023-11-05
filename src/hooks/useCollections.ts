@@ -3,12 +3,13 @@ import { useAtom } from 'jotai'
 import { atomWithStorage } from 'jotai/utils'
 import { useEffect } from 'react'
 import * as PubSub from 'pubsub-js'
+import useNav from './useNav'
 
 const collectionsAtom = atomWithStorage<SQLCollection[]>('collections', [])
 
 export default function useCollections() {
   const [collections, setCollections] = useAtom(collectionsAtom)
-
+  const { nav } = useNav()
   useEffect(() => {
     async function fetchCollections() {
       fetch('/api/collections/list')
@@ -33,5 +34,8 @@ export default function useCollections() {
     }
   }, [])
 
-  return collections
+  return {
+    collections,
+    current: collections.find((c) => c.title === nav?.active),
+  }
 }

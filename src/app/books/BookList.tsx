@@ -1,4 +1,5 @@
-import { SQLBook } from '@/types'
+import * as PubSub from 'pubsub-js'
+import { SQLBook, SubEvent } from '@/types'
 import {
   Button,
   Center,
@@ -22,8 +23,16 @@ import {
   Text,
   VStack,
   chakra,
+  useToast,
 } from '@chakra-ui/react'
-import { Edit, Edit2, FolderInput, MoreHorizontal, Trash2 } from 'lucide-react'
+import {
+  Edit,
+  Edit2,
+  FolderInput,
+  FolderOutput,
+  MoreHorizontal,
+  Trash2,
+} from 'lucide-react'
 import Link from 'next/link'
 import Editor from './Editor'
 import { useState } from 'react'
@@ -31,7 +40,13 @@ import useCollections from '@/hooks/useCollections'
 
 const ChakraMoreHorizontal = chakra(MoreHorizontal)
 
-export default function BookList({ books }: { books: SQLBook[] }) {
+export default function BookList({
+  books,
+  inCollection,
+}: {
+  books: SQLBook[]
+  inCollection?: boolean
+}) {
   const [managing, setManaging] = useState<SQLBook>()
   const [collecting, setCollecting] = useState<SQLBook>()
 
@@ -49,6 +64,7 @@ export default function BookList({ books }: { books: SQLBook[] }) {
             key={book.id}
             book={book}
             onCollect={() => setCollecting(book)}
+            inCollection={inCollection}
           />
         )
       })}
@@ -59,7 +75,8 @@ export default function BookList({ books }: { books: SQLBook[] }) {
 }
 
 function Collector({ book, onClose }: { book?: SQLBook; onClose: () => void }) {
-  const collections = useCollections()
+  const { collections } = useCollections()
+  const [collecting, setCollecting] = useState(false)
   const [collectIds, setCollectIds] = useState<number[]>([])
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.checked) {
@@ -68,12 +85,42 @@ function Collector({ book, onClose }: { book?: SQLBook; onClose: () => void }) {
       setCollectIds(collectIds.filter((id) => id !== Number(e.target.value)))
     }
   }
+  const toast = useToast()
+  const onConfirm = async () => {
+    try {
+      setCollecting(true)
+      if (!collectIds.length) {
+        throw new Error('No collection selected')
+      }
+      await fetch('/api/collections/add', {
+        method: 'POST',
+        body: JSON.stringify({
+          book_id: book?.id,
+          collection_ids: collectIds,
+        }),
+      })
+      toast({
+        description: 'Collected',
+        status: 'success',
+      })
+      setCollecting(false)
+      onClose()
+      PubSub.publish(SubEvent.REFRESH_COLLECTIONS)
+    } catch (error) {
+      setCollecting(false)
+      toast({
+        description: (error as Error).message,
+        status: 'error',
+      })
+    }
+  }
+
   return (
     <Modal isOpen={!!book} isCentered onClose={onClose}>
       <ModalOverlay />
       <ModalContent>
         <ModalCloseButton onClick={onClose} />
-        <ModalHeader>Collect to</ModalHeader>
+        <ModalHeader>Collect {book?.title} to</ModalHeader>
         <ModalBody>
           <VStack alignItems={'flex-start'} w="100%">
             {collections.map((collection, idx) => (
@@ -91,6 +138,7 @@ function Collector({ book, onClose }: { book?: SQLBook; onClose: () => void }) {
                   colorScheme="red"
                   checked={collectIds.includes(collection.id)}
                   onChange={onChange}
+                  value={collection.id}
                 >
                   <Text fontSize={18}>{collection.title}</Text>
                 </Checkbox>
@@ -103,7 +151,9 @@ function Collector({ book, onClose }: { book?: SQLBook; onClose: () => void }) {
             colorScheme="red"
             bg="red.300"
             borderRadius={2}
-            disabled={collectIds.length === 0}
+            isDisabled={collectIds.length === 0}
+            onClick={onConfirm}
+            isLoading={collecting}
           >
             Confirm
           </Button>
@@ -116,10 +166,30 @@ function Collector({ book, onClose }: { book?: SQLBook; onClose: () => void }) {
 function BookItem({
   book,
   onCollect,
+  inCollection,
 }: {
   book: SQLBook
   onCollect: () => void
+  inCollection?: boolean
 }) {
+  const { current } = useCollections()
+  const toast = useToast()
+  const onRemove = async () => {
+    try {
+      await fetch(`/api/collections/remove`, {
+        method: 'POST',
+        body: JSON.stringify({
+          collection_id: current?.id,
+          book_id: book.id,
+        }),
+      })
+    } catch (error) {
+      toast({
+        description: (error as Error).message,
+        status: 'error',
+      })
+    }
+  }
   return (
     <Link key={book.id} href={`/reader?book=${book.title}`}>
       <VStack minW={200} cursor={'pointer'} role="group" _groupHover={{}}>
@@ -202,14 +272,26 @@ function BookItem({
               </HStack>
             )}
           </HStack>
-          <BookOptions onCollect={onCollect} />
+          <BookOptions
+            onCollect={onCollect}
+            onRemove={onRemove}
+            inCollection={inCollection}
+          />
         </HStack>
       </VStack>
     </Link>
   )
 }
 
-function BookOptions({ onCollect }: { onCollect: () => void }) {
+function BookOptions({
+  onCollect,
+  onRemove,
+  inCollection,
+}: {
+  onCollect: () => void
+  onRemove?: () => void
+  inCollection?: boolean
+}) {
   return (
     <Menu matchWidth>
       <MenuButton
@@ -233,13 +315,26 @@ function BookOptions({ onCollect }: { onCollect: () => void }) {
       />
       <MenuList minW={32}>
         <MenuItem icon={<Edit strokeWidth={1} size={18} />}>Edit</MenuItem>
-        <MenuItem
-          icon={<FolderInput strokeWidth={1} size={18} />}
-          onClick={onCollect}
-        >
-          Collect
-        </MenuItem>
-        <MenuItem icon={<Trash2 strokeWidth={1} size={18} />}>Delete</MenuItem>
+        {inCollection ? (
+          <MenuItem
+            icon={<FolderOutput strokeWidth={1} size={18} />}
+            onClick={onRemove}
+          >
+            Remove
+          </MenuItem>
+        ) : (
+          <>
+            <MenuItem
+              icon={<FolderInput strokeWidth={1} size={18} />}
+              onClick={onCollect}
+            >
+              Collect
+            </MenuItem>
+            <MenuItem icon={<Trash2 strokeWidth={1} size={18} />}>
+              Delete
+            </MenuItem>
+          </>
+        )}
       </MenuList>
     </Menu>
   )

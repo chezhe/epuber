@@ -72,9 +72,8 @@ const inspiration = [
 export default function SideBar() {
   const dark = useDark()
   const { nav, setNav } = useNav()
-  const collections = useCollections()
+  const { collections } = useCollections()
   const bg = dark ? 'blackAlpha.400' : 'blackAlpha.100'
-  console.log('collections', collections)
 
   return (
     <VStack
@@ -83,6 +82,7 @@ export default function SideBar() {
       justifyContent={'space-between'}
       h="100%"
       py={4}
+      overflowY={'scroll'}
     >
       <VStack w="100%" gap={6}>
         <HStack w="100%" justifyContent={'center'} px={2}>
@@ -142,6 +142,7 @@ export default function SideBar() {
                 onClick={(param) =>
                   setNav({ category: 'Collections', active: param.title })
                 }
+                rightElement={<Text>{c.book_ids.length}</Text>}
               />
             )
           })}
@@ -166,11 +167,13 @@ function NavItem({
   title,
   isActive,
   onClick,
+  rightElement,
 }: {
   icon: React.ReactElement
   title: string
   isActive: boolean
   onClick: (param: { title: string; icon: React.ReactElement }) => void
+  rightElement?: React.ReactElement
 }) {
   const dark = useDark()
   const bg = dark ? 'blackAlpha.400' : 'blackAlpha.100'
@@ -178,17 +181,21 @@ function NavItem({
     <HStack
       key={title}
       w="100%"
-      pl={2}
+      px={2}
       py={2}
       cursor={'pointer'}
       bg={isActive ? bg : 'transparent'}
+      justifyContent={'space-between'}
       _hover={{
         bg,
       }}
       onClick={() => onClick({ title, icon })}
     >
-      {icon}
-      <Text>{title}</Text>
+      <HStack>
+        {icon}
+        <Text>{title}</Text>
+      </HStack>
+      {rightElement}
     </HStack>
   )
 }

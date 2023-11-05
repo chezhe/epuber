@@ -39,6 +39,7 @@ export interface SQLCollection {
   title: string
   description?: string
   books?: SQLBook[]
+  book_ids: number[]
 }
 
 export enum SubEvent {

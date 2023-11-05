@@ -1,16 +1,21 @@
 'use client'
 
 import useDark from '@/hooks/useDark'
-import { VStack, HStack, chakra, Heading } from '@chakra-ui/react'
+import { VStack, HStack, Heading } from '@chakra-ui/react'
 import { User } from '@supabase/supabase-js'
 import useBooks from '@/hooks/useBooks'
 import useNav from '@/hooks/useNav'
 import { Plus } from 'lucide-react'
+import BookList from './BookList'
+import useCollections from '@/hooks/useCollections'
+import { SQLBook } from '@/types'
 
 export default function Collection({ user }: { user: User | null }) {
   const dark = useDark()
   const books = useBooks()
   const { nav } = useNav()
+  const { collections } = useCollections()
+  const collection = collections.find((c) => c.title === nav?.active)
 
   return (
     <VStack
@@ -46,6 +51,15 @@ export default function Collection({ user }: { user: User | null }) {
           <Heading color="whiteAlpha.800">{nav?.active}</Heading>
           <Plus size={24} color="white" cursor={'pointer'} />
         </HStack>
+
+        <BookList
+          books={
+            collection?.book_ids
+              .map((id) => books.find((b) => b.id === id))
+              .filter((b) => b) as SQLBook[]
+          }
+          inCollection
+        />
       </VStack>
     </VStack>
   )
